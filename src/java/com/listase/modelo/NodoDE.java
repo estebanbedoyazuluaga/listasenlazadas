@@ -11,8 +11,8 @@ package com.listase.modelo;
  */
 public class NodoDE {
     private Infante dato;
-    private Nodo siguiente;
-    private Nodo anterior;
+    private NodoDE siguiente;
+    private NodoDE anterior;
 
     public NodoDE(Infante dato) {
         this.dato = dato;
@@ -26,22 +26,19 @@ public class NodoDE {
         this.dato = dato;
     }
 
-    public Nodo getSiguiente() {
+    public NodoDE getSiguiente() {
         return siguiente;
     }
 
-    public void setSiguiente(Nodo siguiente) {
+    public void setSiguiente(NodoDE siguiente) {
         this.siguiente = siguiente;
     }
 
-    public Nodo getAnterior() {
+    public NodoDE getAnterior() {
         return anterior;
     }
 
-    public void setAnterior(Nodo anterior) {
+    public void setAnterior(NodoDE anterior) {
         this.anterior = anterior;
     }
-    
-    
-    
 }
