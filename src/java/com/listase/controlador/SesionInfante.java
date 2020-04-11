@@ -7,6 +7,7 @@ package com.listase.controlador;
 
 import com.listase.excepciones.InfanteExcepcion;
 import com.listase.modelo.Infante;
+import com.listase.modelo.ListaDE;
 import com.listase.modelo.ListaSE;
 import com.listase.modelo.Nodo;
 import com.listase.utilidades.JsfUtil;
@@ -35,6 +36,8 @@ import org.primefaces.model.diagram.overlay.LabelOverlay;
 @SessionScoped
 public class SesionInfante implements Serializable {
     private ListaSE listaInfantes;
+    private ListaDE listaInfantesDE;
+    
     private Infante infante;
     private String alInicio="1";
     private boolean deshabilitarFormulario=true;
@@ -153,11 +156,7 @@ public class SesionInfante implements Serializable {
     public void setDeshabilitarFormulario(boolean deshabilitarFormulario) {
         this.deshabilitarFormulario = deshabilitarFormulario;
     }
-
-  
     
-    
-
     public String getAlInicio() {
         return alInicio;
     }
@@ -184,89 +183,70 @@ public class SesionInfante implements Serializable {
     
     
     
-    public void guardarInfante()
-    {
+    public void guardarInfante() {
         //obtiene el consecutivo
-        infante.setCodigo((short)(listaInfantes.contarNodos()+1));
-        if(alInicio.compareTo("1")==0)
-        {
+        infante.setCodigo((short) (listaInfantes.contarNodos() + 1));
+        if (alInicio.compareTo("1") == 0) {
             listaInfantes.adicionarNodoAlInicio(infante);
-        }
-        else
-        {
+        } else {
             listaInfantes.adicionarNodo(infante);
-        }  
+        }
         //Vuelvo a llenar la lista para la tabla
         listadoInfantes = listaInfantes.obtenerListaInfantes();
         pintarLista();
-        deshabilitarFormulario=true;
+        deshabilitarFormulario = true;
         JsfUtil.addSuccessMessage("El infante se ha guardado exitosamente");
-        
+
     }
-    
-    public void habilitarFormulario()
-    {
-        deshabilitarFormulario=false;
+
+    public void habilitarFormulario() {
+        deshabilitarFormulario = false;
         infante = new Infante();
     }
-    
-    public void irSiguiente()
-    {
-        if(ayudante.getSiguiente()!=null)
-        {
+        
+    public void irSiguiente() {
+        if (ayudante.getSiguiente() != null) {
             ayudante = ayudante.getSiguiente();
             infante = ayudante.getDato();
-        }        
+        }
     }
     
-    public void irPrimero()
-    {
-        if(listaInfantes.getCabeza()!=null)
-        {
+    public void irPrimero() {
+        if (listaInfantes.getCabeza() != null) {
             ayudante = listaInfantes.getCabeza();
             infante = ayudante.getDato();
-            
-        }
-        else
-        {
+
+        } else {
             infante = new Infante();
         }
         listadoInfantes = listaInfantes.obtenerListaInfantes();
         pintarLista();
-             
+
     }
-    
-    public void irUltimo()
-    {
-        if(listaInfantes.getCabeza()!=null)
-        {            
-            while(ayudante.getSiguiente()!=null)
-            {
+
+    public void irUltimo() {
+        if (listaInfantes.getCabeza() != null) {
+            while (ayudante.getSiguiente() != null) {
                 ayudante = ayudante.getSiguiente();
             }
-            infante=ayudante.getDato();
+            infante = ayudante.getDato();
         }
     }
-    
-    public void cambiarVistaInfantes()
-    {
-        if(textoVista.compareTo("Tabla")==0)
-        {
+
+    public void cambiarVistaInfantes() {
+        if (textoVista.compareTo("Tabla") == 0) {
             textoVista = "Gráfico";
-        }
-        else
-        {
+        } else {
             textoVista = "Tabla";
         }
     }
-    
-    public void invertirLista(){
+
+    public void invertirLista() {
         //Invierte la lista
         listaInfantes.invertirLista();
         irPrimero();
     }
-    
-    
+
     public void pintarLista() {
         //Instancia el modelo
         model = new DefaultDiagramModel();
@@ -282,32 +262,30 @@ public class SesionInfante implements Serializable {
         if (listaInfantes.getCabeza() != null) {
             //llamo a mi ayudante
             Nodo temp = listaInfantes.getCabeza();
-            int posX=2;
-            int posY=2;
+            int posX = 2;
+            int posY = 2;
             //recorro la lista de principio a fin
-            while(temp !=null)
-            {
+            while (temp != null) {
                 //Parado en un elemento
                 //Crea el cuadrito y lo adiciona al modelo
-                Element ele = new Element(temp.getDato().getCodigo()+" "+
-                        temp.getDato().getNombre(), 
-                        posX+"em", posY+"em");
+                Element ele = new Element(temp.getDato().getCodigo() + " "
+                        + temp.getDato().getNombre(),
+                        posX + "em", posY + "em");
                 //adiciona un conector al cuadrito
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.TOP));
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_RIGHT));
-                model.addElement(ele);                    
-                temp=temp.getSiguiente();
-                posX=  posX+5;
-                posY= posY+6;
-            }            
-           
-            //Pinta las flechas            
-            for(int i=0; i < model.getElements().size() -1; i++)
-            {
-                model.connect(createConnection(model.getElements().get(i).getEndPoints().get(1), 
-                        model.getElements().get(i+1).getEndPoints().get(0), "Sig"));
+                model.addElement(ele);
+                temp = temp.getSiguiente();
+                posX = posX + 5;
+                posY = posY + 6;
             }
-            
+
+            //Pinta las flechas            
+            for (int i = 0; i < model.getElements().size() - 1; i++) {
+                model.connect(createConnection(model.getElements().get(i).getEndPoints().get(1),
+                        model.getElements().get(i + 1).getEndPoints().get(0), "Sig"));
+            }
+
         }
     }
 
