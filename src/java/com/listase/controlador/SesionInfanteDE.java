@@ -40,7 +40,7 @@ public class SesionInfanteDE {
 
     private Infante infante;
     private String alInicio = "1";
-    private boolean deshabilitarFormulario = true;
+    private boolean deshabilitarFormulario = false;
     private NodoDE ayudante;
     private String textoVista = "Gráfico";
 
