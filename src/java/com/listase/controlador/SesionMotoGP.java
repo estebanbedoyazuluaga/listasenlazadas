@@ -58,9 +58,7 @@ public class SesionMotoGP implements Serializable {
     private Piloto pilotoDiagrama;
 
     private short moverPilotoCantidad;
-
-    private String moverPilotoSentido;
-
+    
     public SesionMotoGP() {
     }
 
@@ -197,14 +195,8 @@ public class SesionMotoGP implements Serializable {
         this.moverPilotoCantidad = moverPilotoCantidad;
     }
 
-    public String getMoverPilotoSentido() {
-        return moverPilotoSentido;
-    }
 
-    public void setMoverPilotoSentido(String moverPilotoSentido) {
-        this.moverPilotoSentido = moverPilotoSentido;
-    }
-
+    
     public void guardarPiloto() {
         //obtiene el consecutivo
         piloto.setCodigo((short) (listaPilotos.contarNodos() + 1));
@@ -414,6 +406,7 @@ public class SesionMotoGP implements Serializable {
                 listaPilotos.adicionarNodoEnPosicion(temp, (short) pos);
                 pintarLista();
                 JsfUtil.addSuccessMessage("Posición modificada exitosamente");
+                
             }
             
         } catch (PilotoException ex) {

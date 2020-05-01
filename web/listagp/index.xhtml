@@ -226,6 +226,8 @@
                     </h:panelGrid>
                     <p:commandButton value="Aceptar" update="pnlVista,:grwlErrores"
                                          action="#{SesionMotoGP.adelantarPiloto()}" />
+                    <p:commandButton value="Cancelar" update="pnlVista,:grwlErrores"
+                                         onclick="PF('modal').hide();$('#form').trigger('reset');" />
                 </p:panel>
             </p:dialog>
         </h:form>
