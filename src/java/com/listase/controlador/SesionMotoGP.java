@@ -15,6 +15,8 @@ import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import org.primefaces.model.diagram.Connection;
@@ -59,6 +61,8 @@ public class SesionMotoGP implements Serializable {
 
     private short moverPilotoCantidad;
     
+    private Piloto pilotoMenorEdad;
+    
     public SesionMotoGP() {
     }
 
@@ -84,6 +88,15 @@ public class SesionMotoGP implements Serializable {
         pintarLista();
     }
 
+
+    public Piloto getPilotoMenorEdad() {
+        return pilotoMenorEdad;
+    }
+
+    public void setPilotoMenorEdad(Piloto pilotoMenorEdad) {
+        this.pilotoMenorEdad = pilotoMenorEdad;
+    }
+    
     public Piloto getPilotoDiagrama() {
         return pilotoDiagrama;
     }
@@ -285,6 +298,8 @@ public class SesionMotoGP implements Serializable {
             NodoGP temp = listaPilotos.getCabeza();
             int posX = 2;
             int posY = 2;
+            
+            
             //recorro la lista de principio a fin
             while (temp != null) {
                 //Parado en un elemento
@@ -299,6 +314,71 @@ public class SesionMotoGP implements Serializable {
 
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_LEFT));
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
+                
+                model.addElement(ele);
+                temp = temp.getSiguiente();
+                posX = posX + 5;
+                posY = posY + 6;
+            }
+
+            //Pinta las flechas            
+            for (int i = 0; i < model.getElements().size() - 1; i++) {
+                model.connect(createConnection(model.getElements().get(i).getEndPoints().get(1),
+                        model.getElements().get(i + 1).getEndPoints().get(0), "Sig"));
+
+                model.connect(createConnection(model.getElements().get(i + 1).getEndPoints().get(2),
+                        model.getElements().get(i).getEndPoints().get(3), "Ant"));
+            }
+
+        }
+    }
+    
+    public void pintarListaMenorEdad() {
+        //Instancia el modelo
+        model = new DefaultDiagramModel();
+        //Se establece para que el diagrama pueda tener infinitas flechas
+        model.setMaxConnections(-1);
+
+        StateMachineConnector connector = new StateMachineConnector();
+        connector.setOrientation(StateMachineConnector.Orientation.ANTICLOCKWISE);
+        connector.setPaintStyle("{strokeStyle:'#7D7463',lineWidth:3}");
+        model.setDefaultConnector(connector);
+
+        ///Adicionar los elementos
+        if (listaPilotos.getCabeza() != null) {
+            //llamo a mi ayudante
+            NodoGP temp = listaPilotos.getCabeza();
+            int posX = 2;
+            int posY = 2;
+            
+            byte menorEdad = 0;
+            
+            try {
+                menorEdad = listaPilotos.obtenerMenorEdad();
+            } catch (PilotoException ex) {
+                JsfUtil.addErrorMessage(ex.getMessage());
+            }
+            //recorro la lista de principio a fin
+            while (temp != null) {
+                //Parado en un elemento
+                //Crea el cuadrito y lo adiciona al modelo
+                Element ele = new Element(temp.getDato().getCodigo() + " "
+                        + temp.getDato().getNombre(),
+                        posX + "em", posY + "em");
+                ele.setId(String.valueOf(temp.getDato().getCodigo()));
+                //adiciona un conector al cuadrito
+                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.TOP));
+                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_RIGHT));
+
+                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_LEFT));
+                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
+                
+                if (temp.getDato().getEdad() == menorEdad){
+                    ele.setStyleClass("ui-diagram-menorEdad");
+                    pilotoMenorEdad = temp.getDato();
+                }
+                    
+
                 model.addElement(ele);
                 temp = temp.getSiguiente();
                 posX = posX + 5;
@@ -393,8 +473,10 @@ public class SesionMotoGP implements Serializable {
             int pos = listaPilotos.obtenerPosicion(pilotoSeleccionado) - moverPilotoCantidad;
             short tam = listaPilotos.contarNodos();
             
-            if (pos>tam || pos<0)
-                JsfUtil.addErrorMessage("posición \"" + pos + "\" inválida");
+            if (pos>tam || pos<0){
+                //JsfUtil.addErrorMessage("posición \"" + pos + "\" inválida");
+            }
+                
             else {
                 //guardar datos del piloto
                 Piloto temp = listaPilotos.obtenerPiloto(pilotoSeleccionado);
@@ -405,7 +487,7 @@ public class SesionMotoGP implements Serializable {
                 //guardar el piloto en la posicion deseada
                 listaPilotos.adicionarNodoEnPosicion(temp, (short) pos);
                 pintarLista();
-                JsfUtil.addSuccessMessage("Posición modificada exitosamente");
+                //JsfUtil.addSuccessMessage("Posición modificada exitosamente");
                 
             }
             
@@ -414,4 +496,8 @@ public class SesionMotoGP implements Serializable {
         }
     }
 
+    
+    public void verMenorPiloto() {
+        pintarListaMenorEdad();
+    }
 }

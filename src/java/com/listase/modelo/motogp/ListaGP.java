@@ -249,6 +249,19 @@ public class ListaGP {
         }
     }
     
-    
+    public byte obtenerMenorEdad() throws PilotoException{
+        if (cabeza == null) {
+            throw new PilotoException("La lista de pilotos está vacía");
+        } else {
+            NodoGP temp = cabeza;
+            byte menor = temp.getDato().getEdad();
+            while (temp != null) {
+                if (temp.getDato().getEdad() < menor)
+                    menor = temp.getDato().getEdad();
+                temp = temp.getSiguiente();
+            }
+            return menor;
+        }
+    }
     
 }

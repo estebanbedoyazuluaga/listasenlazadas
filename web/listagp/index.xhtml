@@ -18,6 +18,10 @@
                 background-color: #98AFC7;
                 color: #ffffff;
             }
+            
+            .ui-diagram-menorEdad{
+                background-color: #7f00ff;
+            }
 
             .ui-diagram-success {
                 background-color: #9CB071;
@@ -55,7 +59,7 @@
 
                             <p:outputLabel for="spExp" value="Experiencia"/>
                             <p:spinner id="spExp" required="true" min="0" max="43" disabled="#{SesionMotoGP.deshabilitarFormulario}"
-                                       value="#{SesionMotoGP.piloto.edad}"/>
+                                       value="#{SesionMotoGP.piloto.experiencia}"/>
 
                             <p:outputLabel value="Color"/>
                             <p:selectOneMenu value="#{SesionMotoGP.piloto.color}"
@@ -186,6 +190,10 @@
                                     action="#{SesionMotoGP.obtenerPilotoDiagrama()}" 
                                     update="panelPiloto" 
                                     oncomplete="PF('dlgDatosPiloto').show();" />
+                        <p:menuitem value="Ver menor" 
+                                    action="#{SesionMotoGP.pintarListaMenorEdad()}" 
+                                    update="panelPilotoMenorEdad,pnlVista" 
+                                    oncomplete="PF('dlgDatosPilotoMenorEdad').show();" />
                         <p:menuitem value="Eliminar" update="pnlVista" 
                                     action="#{SesionMotoGP.eliminarPilotoDiagrama()}" />
                         <p:menuitem value="Enviar al final" update="pnlVista"                                    
@@ -213,6 +221,18 @@
 
                 </p:panel>
             </p:dialog> 
+            <p:dialog id="modalPilotoMenorEdad" header="Datos Piloto" widgetVar="dlgDatosPilotoMenorEdad" 
+                      modal="true" height="100">
+                <p:panel id="panelPilotoMenorEdad">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Código:" />
+                        <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.codigo}" />
+                        <h:outputText value="Nombre:" />
+                        <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.nombre}" />
+                    </h:panelGrid>
+
+                </p:panel>
+            </p:dialog> 
 
             <p:dialog id="modalMoverPiloto" header="Adelantar/Perder posición" widgetVar="dlgMoverPiloto"
                       modal="true" height="100">
@@ -224,10 +244,11 @@
                                    required="true" min="-32767" max="32767" 
                                    value="#{SesionMotoGP.moverPilotoCantidad}"/>
                     </h:panelGrid>
-                    <p:commandButton value="Aceptar" update="pnlVista,:grwlErrores"
-                                         action="#{SesionMotoGP.adelantarPiloto()}" />
+                    <p:commandButton value="Aceptar" update="pnlVista,:grwlErrores" 
+                                         action="#{SesionMotoGP.adelantarPiloto()}"
+                                         />
                     <p:commandButton value="Cancelar" update="pnlVista,:grwlErrores"
-                                         onclick="PF('modal').hide();$('#form').trigger('reset');" />
+                                         oncomplete="PF('dlgMoverPiloto').hide();" />
                 </p:panel>
             </p:dialog>
         </h:form>
