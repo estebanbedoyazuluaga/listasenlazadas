@@ -462,7 +462,8 @@ public class SesionInfanteDE implements Serializable {
             short tam = listaInfantes.contarNodos();
 
             if (pos > tam || pos < 0) {
-                //JsfUtil.addErrorMessage("posición \"" + pos + "\" inválida");
+//                JsfUtil.addErrorMessage("posición \"" + pos + "\" inválida");
+                JsfUtil.addErrorMessage("Valor inválido");
             } else {
                 //guardar datos del piloto
                 Infante temp = listaInfantes.obtenerInfante(infanteSeleccionado);
@@ -473,7 +474,7 @@ public class SesionInfanteDE implements Serializable {
                 //guardar el piloto en la posicion deseada
                 listaInfantes.adicionarNodoEnPosicion(temp, (short) pos);
                 pintarLista();
-                //JsfUtil.addSuccessMessage("Posición modificada exitosamente");
+                JsfUtil.addSuccessMessage("Posición modificada exitosamente");
 
             }
 

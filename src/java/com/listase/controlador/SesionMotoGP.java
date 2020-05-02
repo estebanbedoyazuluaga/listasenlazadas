@@ -474,7 +474,9 @@ public class SesionMotoGP implements Serializable {
             short tam = listaPilotos.contarNodos();
             
             if (pos>tam || pos<0){
-                //JsfUtil.addErrorMessage("posición \"" + pos + "\" inválida");
+//                JsfUtil.addErrorMessage("posición \"" + pos + "\" inválida");
+                JsfUtil.addErrorMessage("Valor inválido");
+
             }
                 
             else {
@@ -487,7 +489,7 @@ public class SesionMotoGP implements Serializable {
                 //guardar el piloto en la posicion deseada
                 listaPilotos.adicionarNodoEnPosicion(temp, (short) pos);
                 pintarLista();
-                //JsfUtil.addSuccessMessage("Posición modificada exitosamente");
+                JsfUtil.addSuccessMessage("Posición modificada exitosamente");
                 
             }
             
