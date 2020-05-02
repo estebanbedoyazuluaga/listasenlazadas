@@ -8,9 +8,29 @@
     </h:head>
     <h:body>
         <h:form>
+            
+            <p:outputLabel value="Bienbenid@, #{loginBean.usuarioAutenticado.nombreCompleto}" />
+            <br/>
+            <br/>
+            <p:outputLabel value="Nivel de usuario: #{loginBean.usuarioAutenticado.tipoUsuario.descripcion}" />
+            <br/>
+            <br/>
             <p:commandButton value="Lista SE" action="listase/index.xhtml" ajax="false"/>
-            <p:commandButton value="Lista DE" action="listade/index.xhtml" ajax="false"/>
-            <p:commandButton value="Lista GP" action="listagp/index.xhtml" ajax="false"/>
+            
+            <!-- 
+            si el usuario autenticado no es administrador, 
+            los botones estarán deshabilitados
+            -->
+            <p:commandButton value="Lista DE" action="listade/index.xhtml" 
+                             disabled="#{loginBean.usuarioAutenticado.tipoUsuario.codigo != 1}"
+                             ajax="false"/>
+            <p:commandButton value="Lista GP" action="listagp/index.xhtml" 
+                             disabled="#{loginBean.usuarioAutenticado.tipoUsuario.codigo != 1}"
+                             ajax="false"/>
+            <br/>
+            <br/>
+            <p:commandButton value="Salir" action="login.xhtml" ajax="false"/>
+            
         </h:form>
         
     </h:body>

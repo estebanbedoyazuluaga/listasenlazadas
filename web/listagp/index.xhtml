@@ -5,7 +5,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Facelet Title</title>
+        <title>MotoGP</title>
         <style type="text/css">
             .ui-diagram-element {   
                 width:8em; 
@@ -18,7 +18,7 @@
                 background-color: #98AFC7;
                 color: #ffffff;
             }
-            
+
             .ui-diagram-menorEdad{
                 background-color: #7f00ff;
             }
@@ -46,7 +46,7 @@
         <h:form id="frmPiloto">
             <p:commandButton value="Volver" action="inicio" />
             <p:panel header="Lista Doblemente Enlazada Pilotos - Total Pilotos #{SesionMotoGP.listaPilotos.contarNodos()}">
-                <p:panelGrid columns="2">
+                <p:panelGrid columns="3">
                     <p:panel header="Datos Piloto">
 
                         <p:panelGrid columns="2">
@@ -114,6 +114,17 @@
                         <br/>
                         <p:outputLabel value="#{SesionMotoGP.listaPilotos.obtenerListadoPilotos()}"/>
 
+                    </p:panel>
+                    <p:panel id="pnlMenorEdad" header="Menor Edad">
+                        <h:outputText value="Código: " />
+                        <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.codigo}" />
+                        <br/>
+                        <h:outputText value="Nombre: " />
+                        <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.nombre}" />
+                        <br/>
+                        <h:outputText value="Edad: " />
+                        <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.edad}" />
+                        
                     </p:panel>
 
 
@@ -190,12 +201,16 @@
                                     action="#{SesionMotoGP.obtenerPilotoDiagrama()}" 
                                     update="panelPiloto" 
                                     oncomplete="PF('dlgDatosPiloto').show();" />
+
                         <p:menuitem value="Ver menor" 
                                     action="#{SesionMotoGP.pintarListaMenorEdad()}" 
-                                    update="panelPilotoMenorEdad,pnlVista" 
+                                    update="panelPilotoMenorEdad,pnlVista,pnlMenorEdad" 
                                     oncomplete="PF('dlgDatosPilotoMenorEdad').show();" />
-                        <p:menuitem value="Eliminar" update="pnlVista" 
-                                    action="#{SesionMotoGP.eliminarPilotoDiagrama()}" />
+
+
+                        <p:menuitem value="Eliminar" action="#{SesionMotoGP.obtenerPilotoDiagrama()}"
+                                    update="panelEliminarPiloto"
+                                    oncomplete="PF('dlgEliminarPiloto').show();"/>
                         <p:menuitem value="Enviar al final" update="pnlVista"                                    
                                     action="#{SesionMotoGP.enviarAlFinal()}"/>
                         <p:menuitem value="Enviar al inicio" update="pnlVista"                                    
@@ -210,7 +225,7 @@
             </p:panel>
 
             <p:dialog id="modalPiloto" header="Datos Piloto" widgetVar="dlgDatosPiloto" 
-                      modal="true" height="100">
+                      modal="true" >
                 <p:panel id="panelPiloto">
                     <h:panelGrid columns="2">
                         <h:outputText value="Código:" />
@@ -222,20 +237,26 @@
                 </p:panel>
             </p:dialog> 
             <p:dialog id="modalPilotoMenorEdad" header="Datos Piloto" widgetVar="dlgDatosPilotoMenorEdad" 
-                      modal="true" height="100">
+                      modal="true" >
                 <p:panel id="panelPilotoMenorEdad">
                     <h:panelGrid columns="2">
                         <h:outputText value="Código:" />
                         <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.codigo}" />
                         <h:outputText value="Nombre:" />
                         <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.nombre}" />
+                        <h:outputText value="Edad: " />
+                        <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.edad}" />
+                        <p:commandButton value="Aceptar" update="pnlVista,:grwlErrores" 
+                                         action="#{SesionMotoGP.adelantarPiloto()}"
+                                         onclick="PF('dlgDatosPilotoMenorEdad').hide();"
+                                         />
                     </h:panelGrid>
 
                 </p:panel>
             </p:dialog> 
 
             <p:dialog id="modalMoverPiloto" header="Adelantar/Perder posición" widgetVar="dlgMoverPiloto"
-                      modal="true" height="100">
+                      modal="true" >
 
                 <p:panel id="panelMoverPiloto">
                     <h:panelGrid columns="2">
@@ -245,12 +266,31 @@
                                    value="#{SesionMotoGP.moverPilotoCantidad}"/>
                     </h:panelGrid>
                     <p:commandButton value="Aceptar" update="pnlVista,:grwlErrores" 
-                                         action="#{SesionMotoGP.adelantarPiloto()}"
-                                         />
+                                     action="#{SesionMotoGP.adelantarPiloto()}"
+                                     />
                     <p:commandButton value="Cancelar" update="pnlVista,:grwlErrores"
-                                         oncomplete="PF('dlgMoverPiloto').hide();" />
+                                     oncomplete="PF('dlgMoverPiloto').hide();" />
                 </p:panel>
             </p:dialog>
+
+            <p:dialog id="modalEliminarPiloto" header="Eliminando Piloto: " widgetVar="dlgEliminarPiloto" 
+                      modal="true" >
+                <p:panel id="panelEliminarPiloto">
+                    <h:panelGrid columns="2" >
+                        
+                        <h:outputText value="Código:" />
+                        <h:outputText value="#{SesionMotoGP.pilotoDiagrama.codigo}" />
+                        <h:outputText value="Nombre:" />
+                        <h:outputText value="#{SesionMotoGP.pilotoDiagrama.nombre}" />
+                        <h:outputText value="Edad:" />
+                        <h:outputText value="#{SesionMotoGP.pilotoDiagrama.edad}" />
+                    </h:panelGrid>
+                    <p:commandButton value="Aceptar" action="#{SesionMotoGP.eliminarPilotoDiagrama()}" 
+                                     oncomplete="PF('dlgEliminarPiloto').hide();" update="pnlVista" />
+                    <p:commandButton value="Cancelar" onclick="PF('dlgEliminarPiloto').hide();" />
+                </p:panel>
+            </p:dialog>
+
         </h:form>
 
     </h:body>

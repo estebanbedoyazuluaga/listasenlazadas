@@ -209,5 +209,82 @@ public class ListaDE implements Serializable {
         }
         throw new InfanteExcepcion("La lista de infantes está vacía");
     }
+    
+    public void adicionarNodoEnPosicion(Infante nuevo, short posicion) throws InfanteExcepcion{
+        if (cabeza!=null){
+            short tam = contarNodos();
+            if (posicion<=0){
+                throw new InfanteExcepcion("La posición " + posicion + " no existe en la lista");
+            }
+            //si la posición dada existe en la lista
+            else if (tam + 1 >= posicion) {
+                NodoDE temp = cabeza;
+                short cont = 1;
+                while ( cont != posicion ){
+                    temp = temp.getSiguiente();
+                    cont++;
+                }
+                //el nuevo nodo debe estar entre el anterior de temp y temp 
+                
+                //si temp es el primer nodo
+                if (temp == null){
+                    adicionarNodo(nuevo);
+                } else if(temp.getAnterior() == null){
+                    adicionarNodoAlInicio(nuevo);
+                } else {
+                    //se crea el nuevo nodo del piloto
+                    NodoDE temp2 = new NodoDE(nuevo);
+                    
+                    //se le asigna su anterior y siguiente
+                    temp2.setAnterior(temp.getAnterior());
+                    temp2.setSiguiente(temp);
+                    
+                    //ahora se reasignan el nuevo nodo a siguiente y anterior
+                    //de los nodos que lo rodean
+                    temp.getAnterior().setSiguiente(temp2);
+                    temp.setAnterior(temp2);
+                }
+            }
+            //si no existe en la lista
+            else {
+                throw new InfanteExcepcion("La posición dada no existe en la lista");
+            }
+        } else {
+            throw new InfanteExcepcion("La lista de pilotos está vacía");
+        }
+        
+    }
+    
+    public short obtenerPosicion(short codigo) throws InfanteExcepcion{
+        if (cabeza == null) {
+            throw new InfanteExcepcion("La lista de pilotos está vacía");
+        } else {
+            NodoDE temp = cabeza;
+            short cont = 1;
+            while (temp != null) {
+                if (temp.getDato().getCodigo() == codigo) {
+                    return cont;
+                }
+                temp = temp.getSiguiente();
+                cont++;
+            }
+            throw new InfanteExcepcion("El código " + codigo + " no existe en la lista");
+        }
+    }
+    
+    public byte obtenerMenorEdad() throws InfanteExcepcion{
+        if (cabeza == null) {
+            throw new InfanteExcepcion("La lista de infantes está vacía");
+        } else {
+            NodoDE temp = cabeza;
+            byte menor = temp.getDato().getEdad();
+            while (temp != null) {
+                if (temp.getDato().getEdad() < menor)
+                    menor = temp.getDato().getEdad();
+                temp = temp.getSiguiente();
+            }
+            return menor;
+        }
+    }
 
 }

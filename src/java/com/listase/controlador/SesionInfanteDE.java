@@ -36,57 +36,69 @@ import org.primefaces.model.diagram.overlay.LabelOverlay;
 @Named(value = "sesionInfanteDE")
 @SessionScoped
 public class SesionInfanteDE implements Serializable {
+
     private ListaDE listaInfantes;
     private Infante infante;
-    private String alInicio="1";
-    private boolean deshabilitarFormulario=true;
-    private NodoDE ayudante;   
-    private String textoVista="Gráfico";
-    
+    private String alInicio = "1";
+    private boolean deshabilitarFormulario = true;
+    private NodoDE ayudante;
+    private String textoVista = "Gráfico";
+
     private List listadoInfantes;
-    
+
     private DefaultDiagramModel model;
-    
+
     private short codigoEliminar;
-    
+
     private ControladorLocalidades controlLocalidades;
-    
+
     private String codigoDeptoSel;
-    
+
     private short infanteSeleccionado;
-    
+
     private Infante infanteDiagrama;
+
+    private short moverInfanteCantidad;
     
+    private Infante infanteMenorEdad;
+
     /**
      * Creates a new instance of SesionInfante
      */
-    public SesionInfanteDE() {        
+    public SesionInfanteDE() {
     }
-    
+
     @PostConstruct
-    private void inicializar()
-    {
+    private void inicializar() {
         controlLocalidades = new ControladorLocalidades();
         //inicializando el combo en el primer depto
         codigoDeptoSel = controlLocalidades.getDepartamentos().get(0).getCodigo();
-        
-        listaInfantes = new ListaDE();        
+
+        listaInfantes = new ListaDE();
         //LLenado de la bds
-        listaInfantes.adicionarNodo(new Infante("Carlitos",(short) 1, (byte)2, true,
+        listaInfantes.adicionarNodo(new Infante("Carlitos", (short) 1, (byte) 2, true,
                 controlLocalidades.getCiudades().get(0).getNombre()));
-        listaInfantes.adicionarNodo(new Infante("Juanita",(short) 2, (byte)3, false,
-        controlLocalidades.getCiudades().get(3).getNombre()));
-        listaInfantes.adicionarNodo(new Infante("Martina",(short) 3, (byte)1,false,
-        controlLocalidades.getCiudades().get(1).getNombre()));
-        listaInfantes.adicionarNodoAlInicio(new Infante("Mariana",(short) 4, (byte)5,false,
-        controlLocalidades.getCiudades().get(2).getNombre()));
+        listaInfantes.adicionarNodo(new Infante("Juanita", (short) 2, (byte) 3, false,
+                controlLocalidades.getCiudades().get(3).getNombre()));
+        listaInfantes.adicionarNodo(new Infante("Martina", (short) 3, (byte) 1, false,
+                controlLocalidades.getCiudades().get(1).getNombre()));
+        listaInfantes.adicionarNodoAlInicio(new Infante("Mariana", (short) 4, (byte) 5, false,
+                controlLocalidades.getCiudades().get(2).getNombre()));
         ayudante = listaInfantes.getCabeza();
-        infante = ayudante.getDato();     
+        infante = ayudante.getDato();
         //Me llena el objeto List para la tabla
         listadoInfantes = listaInfantes.obtenerListaInfantes();
         pintarLista();
-   }
+    }
 
+    public Infante getInfanteMenorEdad() {
+        return infanteMenorEdad;
+    }
+
+    public void setInfanteMenorEdad(Infante infanteMenorEdad) {
+        this.infanteMenorEdad = infanteMenorEdad;
+    }
+    
     public Infante getInfanteDiagrama() {
         return infanteDiagrama;
     }
@@ -94,8 +106,14 @@ public class SesionInfanteDE implements Serializable {
     public void setInfanteDiagrama(Infante infanteDiagrama) {
         this.infanteDiagrama = infanteDiagrama;
     }
-    
-    
+
+    public short getMoverInfanteCantidad() {
+        return moverInfanteCantidad;
+    }
+
+    public void setMoverInfanteCantidad(short moverInfanteCantidad) {
+        this.moverInfanteCantidad = moverInfanteCantidad;
+    }
 
     public short getInfanteSeleccionado() {
         return infanteSeleccionado;
@@ -104,8 +122,6 @@ public class SesionInfanteDE implements Serializable {
     public void setInfanteSeleccionado(short infanteSeleccionado) {
         this.infanteSeleccionado = infanteSeleccionado;
     }
-    
-    
 
     public String getCodigoDeptoSel() {
         return codigoDeptoSel;
@@ -115,8 +131,6 @@ public class SesionInfanteDE implements Serializable {
         this.codigoDeptoSel = codigoDeptoSel;
     }
 
-    
-    
     public ControladorLocalidades getControlLocalidades() {
         return controlLocalidades;
     }
@@ -124,21 +138,19 @@ public class SesionInfanteDE implements Serializable {
     public void setControlLocalidades(ControladorLocalidades controlLocalidades) {
         this.controlLocalidades = controlLocalidades;
     }
-     
-    
-    
+
     public DiagramModel getModel() {
         return model;
     }
-     
+
     private Connection createConnection(EndPoint from, EndPoint to, String label) {
         Connection conn = new Connection(from, to);
         conn.getOverlays().add(new ArrowOverlay(20, 20, 1, 1));
-         
-        if(label != null) {
+
+        if (label != null) {
             conn.getOverlays().add(new LabelOverlay(label, "flow-label", 0.5));
         }
-         
+
         return conn;
     }
 
@@ -150,8 +162,6 @@ public class SesionInfanteDE implements Serializable {
         this.codigoEliminar = codigoEliminar;
     }
 
-    
-    
     public String getTextoVista() {
         return textoVista;
     }
@@ -160,8 +170,6 @@ public class SesionInfanteDE implements Serializable {
         this.textoVista = textoVista;
     }
 
-    
-    
     public List getListadoInfantes() {
         return listadoInfantes;
     }
@@ -169,8 +177,6 @@ public class SesionInfanteDE implements Serializable {
     public void setListadoInfantes(List listadoInfantes) {
         this.listadoInfantes = listadoInfantes;
     }
-    
-    
 
     public boolean isDeshabilitarFormulario() {
         return deshabilitarFormulario;
@@ -180,10 +186,6 @@ public class SesionInfanteDE implements Serializable {
         this.deshabilitarFormulario = deshabilitarFormulario;
     }
 
-  
-    
-    
-
     public String getAlInicio() {
         return alInicio;
     }
@@ -191,7 +193,7 @@ public class SesionInfanteDE implements Serializable {
     public void setAlInicio(String alInicio) {
         this.alInicio = alInicio;
     }
-    
+
     public ListaDE getListaInfantes() {
         return listaInfantes;
     }
@@ -207,102 +209,78 @@ public class SesionInfanteDE implements Serializable {
     public void setInfante(Infante infante) {
         this.infante = infante;
     }
-    
-    
-    
-    public void guardarInfante()
-    {
+
+    public void guardarInfante() {
         //obtiene el consecutivo
-        infante.setCodigo((short)(listaInfantes.contarNodos()+1));
-        if(alInicio.compareTo("1")==0)
-        {
+        infante.setCodigo((short) (listaInfantes.contarNodos() + 1));
+        if (alInicio.compareTo("1") == 0) {
             listaInfantes.adicionarNodoAlInicio(infante);
-        }
-        else
-        {
+        } else {
             listaInfantes.adicionarNodo(infante);
-        }  
+        }
         //Vuelvo a llenar la lista para la tabla
         listadoInfantes = listaInfantes.obtenerListaInfantes();
         pintarLista();
-        deshabilitarFormulario=true;
+        deshabilitarFormulario = true;
         JsfUtil.addSuccessMessage("El infante se ha guardado exitosamente");
-        
+
     }
-    
-    public void habilitarFormulario()
-    {
-        deshabilitarFormulario=false;
+
+    public void habilitarFormulario() {
+        deshabilitarFormulario = false;
         infante = new Infante();
     }
-    
-    public void irAnterior()
-    {
-        if(ayudante.getAnterior()!=null)
-        {
+
+    public void irAnterior() {
+        if (ayudante.getAnterior() != null) {
             ayudante = ayudante.getAnterior();
             infante = ayudante.getDato();
-        }        
+        }
     }
-    
-    
-    public void irSiguiente()
-    {
-        if(ayudante.getSiguiente()!=null)
-        {
+
+    public void irSiguiente() {
+        if (ayudante.getSiguiente() != null) {
             ayudante = ayudante.getSiguiente();
             infante = ayudante.getDato();
-        }        
+        }
     }
-    
-    public void irPrimero()
-    {
-        if(listaInfantes.getCabeza()!=null)
-        {
+
+    public void irPrimero() {
+        if (listaInfantes.getCabeza() != null) {
             ayudante = listaInfantes.getCabeza();
             infante = ayudante.getDato();
-            
-        }
-        else
-        {
+
+        } else {
             infante = new Infante();
         }
         listadoInfantes = listaInfantes.obtenerListaInfantes();
         pintarLista();
-             
+
     }
-    
-    public void irUltimo()
-    {
-        if(listaInfantes.getCabeza()!=null)
-        {            
-            while(ayudante.getSiguiente()!=null)
-            {
+
+    public void irUltimo() {
+        if (listaInfantes.getCabeza() != null) {
+            while (ayudante.getSiguiente() != null) {
                 ayudante = ayudante.getSiguiente();
             }
-            infante=ayudante.getDato();
+            infante = ayudante.getDato();
         }
     }
-    
-    public void cambiarVistaInfantes()
-    {
-        if(textoVista.compareTo("Tabla")==0)
-        {
+
+    public void cambiarVistaInfantes() {
+        if (textoVista.compareTo("Tabla") == 0) {
             textoVista = "Gráfico";
-        }
-        else
-        {
+        } else {
             textoVista = "Tabla";
         }
     }
-    
-    public void invertirLista(){
+
+    public void invertirLista() {
         //Invierte la lista
         listaInfantes.invertirLista();
         irPrimero();
     }
-    
-    
+
     public void pintarLista() {
         //Instancia el modelo
         model = new DefaultDiagramModel();
@@ -318,84 +296,136 @@ public class SesionInfanteDE implements Serializable {
         if (listaInfantes.getCabeza() != null) {
             //llamo a mi ayudante
             NodoDE temp = listaInfantes.getCabeza();
-            int posX=2;
-            int posY=2;
+            int posX = 2;
+            int posY = 2;
             //recorro la lista de principio a fin
-            while(temp !=null)
-            {
+            while (temp != null) {
                 //Parado en un elemento
                 //Crea el cuadrito y lo adiciona al modelo
-                Element ele = new Element(temp.getDato().getCodigo()+" "+
-                        temp.getDato().getNombre(), 
-                        posX+"em", posY+"em");
+                Element ele = new Element(temp.getDato().getCodigo() + " "
+                        + temp.getDato().getNombre(),
+                        posX + "em", posY + "em");
                 ele.setId(String.valueOf(temp.getDato().getCodigo()));
                 //adiciona un conector al cuadrito
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.TOP));
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_RIGHT));
-                
+
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_LEFT));
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
-                model.addElement(ele);                    
-                temp=temp.getSiguiente();
-                posX=  posX+5;
-                posY= posY+6;
-            }            
-           
+                model.addElement(ele);
+                temp = temp.getSiguiente();
+                posX = posX + 5;
+                posY = posY + 6;
+            }
+
             //Pinta las flechas            
-            for(int i=0; i < model.getElements().size() -1; i++)
-            {
-                model.connect(createConnection(model.getElements().get(i).getEndPoints().get(1), 
-                        model.getElements().get(i+1).getEndPoints().get(0), "Sig"));
-                
-                
-                model.connect(createConnection(model.getElements().get(i+1).getEndPoints().get(2), 
+            for (int i = 0; i < model.getElements().size() - 1; i++) {
+                model.connect(createConnection(model.getElements().get(i).getEndPoints().get(1),
+                        model.getElements().get(i + 1).getEndPoints().get(0), "Sig"));
+
+                model.connect(createConnection(model.getElements().get(i + 1).getEndPoints().get(2),
                         model.getElements().get(i).getEndPoints().get(3), "Ant"));
             }
+
+        }
+    }
+
+    public void pintarListaMenorEdad() {
+        //Instancia el modelo
+        model = new DefaultDiagramModel();
+        //Se establece para que el diagrama pueda tener infinitas flechas
+        model.setMaxConnections(-1);
+
+        StateMachineConnector connector = new StateMachineConnector();
+        connector.setOrientation(StateMachineConnector.Orientation.ANTICLOCKWISE);
+        connector.setPaintStyle("{strokeStyle:'#7D7463',lineWidth:3}");
+        model.setDefaultConnector(connector);
+
+        ///Adicionar los elementos
+        if (listaInfantes.getCabeza() != null) {
+            //llamo a mi ayudante
+            NodoDE temp = listaInfantes.getCabeza();
+            int posX = 2;
+            int posY = 2;
             
+            byte menorEdad = 0;
+            
+            try {
+                menorEdad = listaInfantes.obtenerMenorEdad();
+            } catch (InfanteExcepcion ex) {
+                JsfUtil.addErrorMessage(ex.getMessage());
+            }
+            
+            //recorro la lista de principio a fin
+            while (temp != null) {
+                //Parado en un elemento
+                //Crea el cuadrito y lo adiciona al modelo
+                Element ele = new Element(temp.getDato().getCodigo() + " "
+                        + temp.getDato().getNombre(),
+                        posX + "em", posY + "em");
+                ele.setId(String.valueOf(temp.getDato().getCodigo()));
+                //adiciona un conector al cuadrito
+                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.TOP));
+                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_RIGHT));
+
+                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_LEFT));
+                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
+                
+                if (temp.getDato().getEdad() == menorEdad){
+                    ele.setStyleClass("ui-diagram-menorEdad");
+                    infanteMenorEdad = temp.getDato();
+                }
+                
+                model.addElement(ele);
+                temp = temp.getSiguiente();
+                posX = posX + 5;
+                posY = posY + 6;
+            }
+
+            //Pinta las flechas            
+            for (int i = 0; i < model.getElements().size() - 1; i++) {
+                model.connect(createConnection(model.getElements().get(i).getEndPoints().get(1),
+                        model.getElements().get(i + 1).getEndPoints().get(0), "Sig"));
+
+                model.connect(createConnection(model.getElements().get(i + 1).getEndPoints().get(2),
+                        model.getElements().get(i).getEndPoints().get(3), "Ant"));
+            }
+
         }
     }
     
     public void onClickRight() {
         String id = FacesContext.getCurrentInstance().getExternalContext()
                 .getRequestParameterMap().get("elementId");
-         
+
         infanteSeleccionado = Short.valueOf(id.replaceAll("frmInfante:diagrama-", ""));
-        
+
     }
 
-    public void eliminarInfante()
-    {
-        if(codigoEliminar >0)
-        {
+    public void eliminarInfante() {
+        if (codigoEliminar > 0) {
             //llamo el eliminar de la lista
-            try{
+            try {
                 listaInfantes.eliminarInfante(codigoEliminar);
                 irPrimero();
-                JsfUtil.addSuccessMessage("Infante "+codigoEliminar +" eliminado.");
-            }
-            catch(InfanteExcepcion e)
-            {
+                JsfUtil.addSuccessMessage("Infante " + codigoEliminar + " eliminado.");
+            } catch (InfanteExcepcion e) {
                 JsfUtil.addErrorMessage(e.getMessage());
             }
-        }
-        else
-        {
-            JsfUtil.addErrorMessage("El código a eliminar "+codigoEliminar+ " no es válido");
+        } else {
+            JsfUtil.addErrorMessage("El código a eliminar " + codigoEliminar + " no es válido");
         }
     }
-    
-    
-    public void obtenerInfanteDiagrama()
-    {
+
+    public void obtenerInfanteDiagrama() {
         try {
             infanteDiagrama = listaInfantes.obtenerInfante(infanteSeleccionado);
         } catch (InfanteExcepcion ex) {
             JsfUtil.addErrorMessage(ex.getMessage());
         }
     }
-    
-    public void enviarAlFinal()
-    {
+
+    public void enviarAlFinal() {
         try {
             ///Buscar el infante y guardar los datos en una variable temporal
             Infante infTemporal = listaInfantes.obtenerInfante(infanteSeleccionado);
@@ -403,15 +433,14 @@ public class SesionInfanteDE implements Serializable {
             listaInfantes.eliminarInfante(infanteSeleccionado);
             // Adicionarlo al final
             listaInfantes.adicionarNodo(infTemporal);
-            
+
             pintarLista();
         } catch (InfanteExcepcion ex) {
             JsfUtil.addErrorMessage(ex.getMessage());
         }
     }
-    
-    public void enviarAlInicio()
-    {
+
+    public void enviarAlInicio() {
         try {
             ///Buscar el infante y guardar los datos en una variable temporal
             Infante infTemporal = listaInfantes.obtenerInfante(infanteSeleccionado);
@@ -419,12 +448,48 @@ public class SesionInfanteDE implements Serializable {
             listaInfantes.eliminarInfante(infanteSeleccionado);
             // Adicionarlo al inicio
             listaInfantes.adicionarNodoAlInicio(infTemporal);
-            
+
             pintarLista();
         } catch (InfanteExcepcion ex) {
             JsfUtil.addErrorMessage(ex.getMessage());
         }
     }
-    
-    
+
+    public void adelantarInfante() throws InfanteExcepcion {
+        try {
+            //calcular posicion deseada
+            int pos = listaInfantes.obtenerPosicion(infanteSeleccionado) - moverInfanteCantidad;
+            short tam = listaInfantes.contarNodos();
+
+            if (pos > tam || pos < 0) {
+                //JsfUtil.addErrorMessage("posición \"" + pos + "\" inválida");
+            } else {
+                //guardar datos del piloto
+                Infante temp = listaInfantes.obtenerInfante(infanteSeleccionado);
+
+                //eliminar el piloto
+                listaInfantes.eliminarInfante(infanteSeleccionado);
+
+                //guardar el piloto en la posicion deseada
+                listaInfantes.adicionarNodoEnPosicion(temp, (short) pos);
+                pintarLista();
+                //JsfUtil.addSuccessMessage("Posición modificada exitosamente");
+
+            }
+
+        } catch (InfanteExcepcion ex) {
+            JsfUtil.addErrorMessage(ex.getMessage());
+        }
+    }
+
+    public void eliminarInfanteConfirmacion() {
+        try {
+            Infante infTemporal = listaInfantes.obtenerInfante(infanteSeleccionado);
+            listaInfantes.eliminarInfante(infanteSeleccionado);
+            pintarLista();
+        } catch (InfanteExcepcion ex) {
+            JsfUtil.addErrorMessage(ex.getMessage());
+
+        }
+    }
 }

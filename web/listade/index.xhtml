@@ -18,6 +18,10 @@
                 background-color: #98AFC7;
                 color: #ffffff;
             }
+            
+            .ui-diagram-menorEdad{
+                background-color: #7f00ff;
+            }
 
             .ui-diagram-success {
                 background-color: #9CB071;
@@ -42,7 +46,7 @@
         <h:form id="frmInfante">
             <p:commandButton value="Volver" action="inicio" />
             <p:panel header="Lista Doblemente Enlazada Infantes - Total Infantes #{sesionInfanteDE.listaInfantes.contarNodos()}">
-                <p:panelGrid columns="2">
+                <p:panelGrid columns="3">
                     <p:panel header="Datos Infante">
 
                         <p:panelGrid columns="2">
@@ -119,8 +123,24 @@
                             <p:outputLabel value="#{sesionInfanteDE.listaInfantes.contarInfantesxGenero(false)}"/>
                         </h:panelGrid>
                     </p:panel>
-
-
+                    
+                    <p:panel id="pnlMenorEdad" header="Menor Edad">
+                        <h:outputText value="Código: " />
+                        <h:outputText value="#{sesionInfanteDE.infanteMenorEdad.codigo}" />
+                        <br/>
+                        <h:outputText value="Nombre: " />
+                        <h:outputText value="#{sesionInfanteDE.infanteMenorEdad.nombre}" />
+                        <br/>
+                        <h:outputText value="Edad: " />
+                        <h:outputText value="#{sesionInfanteDE.infanteMenorEdad.edad}" />
+                        <br/>
+                        <h:outputText value="Género:" />
+                        <h:outputText rendered="#{sesionInfanteDE.infanteMenorEdad.genero}" value="Masculino" />
+                        <h:outputText rendered="#{!sesionInfanteDE.infanteMenorEdad.genero}" value="Femenino" />
+                        
+                    </p:panel>
+                    
+                    
                 </p:panelGrid>
 
                 <p:panel header="Gráfico" id="pnlVista" style="width: 100%;">
@@ -187,27 +207,40 @@
                                    >
                         <p:menuitem value="Ver datos" 
                                     action="#{sesionInfanteDE.obtenerInfanteDiagrama()}" 
-                                    update="pnlVista"                                    
+                                    update="panelInfante"                                    
                                     oncomplete="PF('dlgDatosInfante').show();" />
-                        <p:menuitem value="Eliminar"/>
+                        
+                        <p:menuitem value="Ver menor" 
+                                    action="#{sesionInfanteDE.pintarListaMenorEdad()}" 
+                                    update="panelInfanteMenorEdad,pnlVista,pnlMenorEdad" 
+                                    oncomplete="PF('dlgDatosInfanteMenorEdad').show();" />
+                        
+                        <p:menuitem value="Eliminar" action="#{sesionInfanteDE.obtenerInfanteDiagrama()}"
+                                    update="panelEliminarInfante"
+                                    oncomplete="PF('dlgEliminarInfante').show();"/>
                         <p:menuitem value="Enviar al final" update="pnlVista"                                    
                                     action="#{sesionInfanteDE.enviarAlFinal()}"/>
                         <p:menuitem value="Enviar al inicio" update="pnlVista"                                    
                                     action="#{sesionInfanteDE.enviarAlInicio()}"                                    
                                     />
-                        <p:menuitem value="Adelantar/Perder Posición"/>
+                        <p:menuitem value="Adelantar/Perder Posición" 
+                                    action="#{sesionInfanteDE.obtenerInfanteDiagrama()}" 
+                                    update="panelInfante" 
+                                    oncomplete="PF('dlgMoverInfante').show();" />
                     </p:contextMenu>
                 </p:panel>
             </p:panel>
             
             <p:dialog id="modalInfante" header="Datos Infante" widgetVar="dlgDatosInfante" 
-                      modal="true" height="100">
+                      modal="true" >
                 <p:panel id="panelInfante">
                     <h:panelGrid columns="2">
                         <h:outputText value="Código:" />
                         <h:outputText value="#{sesionInfanteDE.infanteDiagrama.codigo}" />
                         <h:outputText value="Nombre:" />
                         <h:outputText value="#{sesionInfanteDE.infanteDiagrama.nombre}" />
+                        <h:outputText value="Edad: " />
+                        <h:outputText value="#{sesionInfanteDE.infanteMenorEdad.edad}" />
                         <h:outputText value="Género:" />
                         <h:outputText rendered="#{sesionInfanteDE.infanteDiagrama.genero}" value="Masculino" />
                         <h:outputText rendered="#{!sesionInfanteDE.infanteDiagrama.genero}" value="Femenino" />
@@ -215,6 +248,70 @@
                     
                 </p:panel>
             </p:dialog> 
+            
+            <p:dialog id="modalInfanteMenorEdad" header="Menor Edad: #{sesionInfanteDE.infanteMenorEdad.nombre}" widgetVar="dlgDatosInfanteMenorEdad" 
+                      modal="true" >
+                <p:panel id="panelInfanteMenorEdad">
+                    <h:panelGrid columns="2">
+                        <h:outputText value="Código: " />
+                        <h:outputText value="#{sesionInfanteDE.infanteMenorEdad.codigo}" />
+                        <h:outputText value="Nombre: " />
+                        <h:outputText value="#{sesionInfanteDE.infanteMenorEdad.nombre}" />
+                        <h:outputText value="Edad: " />
+                        <h:outputText value="#{sesionInfanteDE.infanteMenorEdad.edad}" />
+                        <h:outputText value="Género:" />
+                        <h:outputText rendered="#{sesionInfanteDE.infanteMenorEdad.genero}" value="Masculino" />
+                        <h:outputText rendered="#{!sesionInfanteDE.infanteMenorEdad.genero}" value="Femenino" />
+                        <p:commandButton value="Aceptar" update="pnlVista,:grwlErrores" 
+                                         action="#{sesionInfanteDE.adelantarInfante()}"
+                                         onclick="PF('dlgDatosInfanteMenorEdad').hide();"
+                                         />
+                    </h:panelGrid>
+                    
+                </p:panel>
+            </p:dialog> 
+            
+            <p:dialog id="modalMoverInfante" header="Adelantar/Perder posición" widgetVar="dlgMoverInfante"
+                      modal="true" >
+
+                <p:panel id="panelMoverInfante">
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Seleccione cantidad (positivo para adelantar, negativo para perder posición):"/>
+                        <p:spinner id="spMoverInfanteCantidad" 
+                                   required="true" min="-32767" max="32767" 
+                                   value="#{sesionInfanteDE.moverInfanteCantidad}"/>
+                    </h:panelGrid>
+                    <p:commandButton value="Aceptar" update="pnlVista,:grwlErrores" 
+                                     action="#{sesionInfanteDE.adelantarInfante()}"
+                                     onclick="PF('dlgMoverInfante').hide();"
+                                     />
+                    <p:commandButton value="Cancelar" update="pnlVista,:grwlErrores"
+                                     onclick="PF('dlgMoverInfante').hide();" />
+                </p:panel>
+            </p:dialog>
+            
+            <p:dialog id="modalEliminarInfante" header="Eliminando Infante: " widgetVar="dlgEliminarInfante" 
+                      modal="true" >
+                <p:panel id="panelEliminarInfante">
+                    <h:panelGrid columns="2" >
+                        
+                        <h:outputText value="Código:" />
+                        <h:outputText value="#{sesionInfanteDE.infanteDiagrama.codigo}" />
+                        <h:outputText value="Nombre:" />
+                        <h:outputText value="#{sesionInfanteDE.infanteDiagrama.nombre}" />
+
+                        <h:outputText value="Edad:" />
+                        <h:outputText value="#{sesionInfanteDE.infanteDiagrama.edad}" />
+                        <h:outputText value="Género:" />
+                        <h:outputText rendered="#{sesionInfanteDE.infanteDiagrama.genero}" value="Masculino" />
+                        <h:outputText rendered="#{!sesionInfanteDE.infanteDiagrama.genero}" value="Femenino" />
+                    </h:panelGrid>
+                    <p:commandButton value="Aceptar" action="#{sesionInfanteDE.eliminarInfanteConfirmacion()}" 
+                                     onclick="PF('dlgEliminarInfante').hide();" update="pnlVista" />
+                    <p:commandButton value="Cancelar" onclick="PF('dlgEliminarInfante').hide();" />
+                </p:panel>
+            </p:dialog>
+            
         </h:form>
 
     </h:body>

@@ -1,10 +1,14 @@
 package com.listase.utilidades;
 
 import java.util.List;
+import javax.faces.FactoryFinder;
+import javax.faces.application.Application;
+import javax.faces.application.ApplicationFactory;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.faces.el.ValueBinding;
 import javax.faces.model.SelectItem;
 
 public class JsfUtil {
@@ -65,5 +69,23 @@ public class JsfUtil {
         CREATE,
         DELETE,
         UPDATE
+    }
+    
+     public static Object getManagedBean(String beanName) {
+       
+        return getValueBinding(getJsfEl(beanName)).getValue(FacesContext.getCurrentInstance());
+    }
+     
+     private static String getJsfEl(String value) {
+        return "#{" + value + "}";
+    }
+     
+     private static ValueBinding getValueBinding(String el) {
+        return getApplication().createValueBinding(el);
+    }
+    
+     private static Application getApplication() {
+        ApplicationFactory appFactory = (ApplicationFactory) FactoryFinder.getFactory(FactoryFinder.APPLICATION_FACTORY);
+        return appFactory.getApplication();
     }
 }
