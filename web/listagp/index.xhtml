@@ -246,12 +246,11 @@
                         <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.nombre}" />
                         <h:outputText value="Edad: " />
                         <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.edad}" />
-                        <p:commandButton value="Aceptar" update="pnlVista,:grwlErrores" 
-                                         action="#{SesionMotoGP.adelantarPiloto()}"
-                                         onclick="PF('dlgDatosPilotoMenorEdad').hide();"
-                                         />
-                    </h:panelGrid>
 
+                    </h:panelGrid>
+                    <p:commandButton value="Aceptar" update="pnlVista,:grwlErrores" 
+                                     onclick="PF('dlgDatosPilotoMenorEdad').hide();"
+                                     />
                 </p:panel>
             </p:dialog> 
 
