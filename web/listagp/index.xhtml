@@ -48,7 +48,6 @@
             <p:panel header="Lista Doblemente Enlazada Pilotos - Total Pilotos #{SesionMotoGP.listaPilotos.contarNodos()}">
                 <p:panelGrid columns="3">
                     <p:panel header="Datos Piloto">
-
                         <p:panelGrid columns="2">
                             <p:outputLabel for="txtNombre" value="Nombre"/>
                             <p:inputText id="txtNombre" required="true" disabled="#{SesionMotoGP.deshabilitarFormulario}"
@@ -103,6 +102,16 @@
                                              update="frmPiloto"/>                           
 
                         </p:panelGrid>
+                        
+                        <p:panelGrid columns="3">
+                            <p:inputText value="#{SesionMotoGP.pilotoAIntercambiarA}" maxlength="4" size="10"/>
+                            <p:inputText value="#{SesionMotoGP.pilotoAIntercambiarB}" maxlength="4" size="10"/>
+                            <p:commandButton value="Intercambiar" action="#{SesionMotoGP.intercambiarPilotos()}" 
+                                         update="frmPiloto,:grwlErrores,pnlVista"
+                                         />
+                            
+                        </p:panelGrid>
+                        
                         <p:outputLabel value="Código a eliminar: "/>
                         <p:inputText value="#{SesionMotoGP.codigoEliminar}" maxlength="4" size="10"/>
                         <p:commandButton value="Eliminar" action="#{SesionMotoGP.eliminarPiloto()}" 
@@ -220,6 +229,7 @@
                                     action="#{SesionMotoGP.obtenerPilotoDiagrama()}" 
                                     update="panelPiloto" 
                                     oncomplete="PF('dlgMoverPiloto').show();" />
+                        
                     </p:contextMenu>
                 </p:panel>
             </p:panel>

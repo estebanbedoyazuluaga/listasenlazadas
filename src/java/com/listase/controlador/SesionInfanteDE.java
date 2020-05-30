@@ -59,7 +59,7 @@ public class SesionInfanteDE implements Serializable {
     private Infante infanteDiagrama;
 
     private short moverInfanteCantidad;
-    
+
     private Infante infanteMenorEdad;
 
     /**
@@ -98,7 +98,7 @@ public class SesionInfanteDE implements Serializable {
     public void setInfanteMenorEdad(Infante infanteMenorEdad) {
         this.infanteMenorEdad = infanteMenorEdad;
     }
-    
+
     public Infante getInfanteDiagrama() {
         return infanteDiagrama;
     }
@@ -347,15 +347,15 @@ public class SesionInfanteDE implements Serializable {
             NodoDE temp = listaInfantes.getCabeza();
             int posX = 2;
             int posY = 2;
-            
+
             byte menorEdad = 0;
-            
+
             try {
                 menorEdad = listaInfantes.obtenerMenorEdad();
             } catch (InfanteExcepcion ex) {
                 JsfUtil.addErrorMessage(ex.getMessage());
             }
-            
+
             //recorro la lista de principio a fin
             while (temp != null) {
                 //Parado en un elemento
@@ -370,12 +370,12 @@ public class SesionInfanteDE implements Serializable {
 
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_LEFT));
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
-                
-                if (temp.getDato().getEdad() == menorEdad){
+
+                if (temp.getDato().getEdad() == menorEdad) {
                     ele.setStyleClass("ui-diagram-menorEdad");
                     infanteMenorEdad = temp.getDato();
                 }
-                
+
                 model.addElement(ele);
                 temp = temp.getSiguiente();
                 posX = posX + 5;
@@ -393,7 +393,7 @@ public class SesionInfanteDE implements Serializable {
 
         }
     }
-    
+
     public void onClickRight() {
         String id = FacesContext.getCurrentInstance().getExternalContext()
                 .getRequestParameterMap().get("elementId");
@@ -493,4 +493,20 @@ public class SesionInfanteDE implements Serializable {
 
         }
     }
+
+    public void actualizarMenorEdad() throws InfanteExcepcion {
+        byte menorEdad = 0;
+        
+        menorEdad = listaInfantes.obtenerMenorEdad();
+        
+        NodoDE temp = listaInfantes.getCabeza();
+        
+        while (temp != null) {
+            if (temp.getDato().getEdad() == menorEdad) {
+                infanteMenorEdad = temp.getDato();
+            }
+            temp = temp.getSiguiente();
+        }
+    }
+
 }

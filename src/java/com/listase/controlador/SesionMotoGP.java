@@ -63,9 +63,23 @@ public class SesionMotoGP implements Serializable {
     
     private Piloto pilotoMenorEdad;
     
+    byte pilotoAIntercambiarA;
+    
+    byte pilotoAIntercambiarB;
+    
     public SesionMotoGP() {
     }
-
+    
+    //<editor-fold defaultstate="collapsed" desc="Clasificacion">
+    
+    private Piloto pilotoClasificacion;
+    
+    public void guardarPilotoClasificacion(){
+        
+    }
+    
+    //</editor-fold>
+    
     @PostConstruct
     public void inicializar() {
         controlLocalidades = new ControladorLocalidades();
@@ -88,7 +102,16 @@ public class SesionMotoGP implements Serializable {
         pintarLista();
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Metodos de acceso">
 
+    public Piloto getPilotoClasificacion() {
+        return pilotoClasificacion;
+    }
+
+    public void setPilotoClasificacion(Piloto pilotoClasificacion) {
+        this.pilotoClasificacion = pilotoClasificacion;
+    }
+    
     public Piloto getPilotoMenorEdad() {
         return pilotoMenorEdad;
     }
@@ -132,18 +155,7 @@ public class SesionMotoGP implements Serializable {
     public DiagramModel getModel() {
         return model;
     }
-
-    private Connection createConnection(EndPoint from, EndPoint to, String label) {
-        Connection conn = new Connection(from, to);
-        conn.getOverlays().add(new ArrowOverlay(20, 20, 1, 1));
-
-        if (label != null) {
-            conn.getOverlays().add(new LabelOverlay(label, "flow-label", 0.5));
-        }
-
-        return conn;
-    }
-
+    
     public short getCodigoEliminar() {
         return codigoEliminar;
     }
@@ -208,7 +220,37 @@ public class SesionMotoGP implements Serializable {
         this.moverPilotoCantidad = moverPilotoCantidad;
     }
 
+    public byte getPilotoAIntercambiarA() {
+        return pilotoAIntercambiarA;
+    }
 
+    public void setPilotoAIntercambiarA(byte pilotoAIntercambiarA) {
+        this.pilotoAIntercambiarA = pilotoAIntercambiarA;
+    }
+
+    public byte getPilotoAIntercambiarB() {
+        return pilotoAIntercambiarB;
+    }
+
+    public void setPilotoAIntercambiarB(byte pilotoAIntercambiarB) {
+        this.pilotoAIntercambiarB = pilotoAIntercambiarB;
+    }
+    
+    
+    
+//</editor-fold>
+    
+
+    private Connection createConnection(EndPoint from, EndPoint to, String label) {
+        Connection conn = new Connection(from, to);
+        conn.getOverlays().add(new ArrowOverlay(20, 20, 1, 1));
+
+        if (label != null) {
+            conn.getOverlays().add(new LabelOverlay(label, "flow-label", 0.5));
+        }
+
+        return conn;
+    }
     
     public void guardarPiloto() {
         //obtiene el consecutivo
@@ -498,8 +540,15 @@ public class SesionMotoGP implements Serializable {
         }
     }
 
-    
     public void verMenorPiloto() {
         pintarListaMenorEdad();
     }
+    
+    public void intercambiarPilotos() throws PilotoException{
+        listaPilotos.intercambiarNodos(pilotoAIntercambiarA, pilotoAIntercambiarA);
+        pintarLista();
+    }
+    
+    
+    
 }

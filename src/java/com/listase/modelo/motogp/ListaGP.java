@@ -187,52 +187,50 @@ public class ListaGP {
         throw new PilotoException("La lista de pilotos está vacía");
     }
 
-    public void adicionarNodoEnPosicion(Piloto nuevo, short posicion) throws PilotoException{
-        if (cabeza!=null){
+    public void adicionarNodoEnPosicion(Piloto nuevo, short posicion) throws PilotoException {
+        if (cabeza != null) {
             short tam = contarNodos();
-            if (posicion<=0){
+            if (posicion <= 0) {
                 throw new PilotoException("La posición " + posicion + " no existe en la lista");
-            }
-            //si la posición dada existe en la lista
+            } //si la posición dada existe en la lista
             else if (tam + 1 >= posicion) {
                 NodoGP temp = cabeza;
                 short cont = 1;
-                while ( cont != posicion ){
+                while (cont != posicion) {
                     temp = temp.getSiguiente();
                     cont++;
                 }
                 //el nuevo nodo debe estar entre el anterior de temp y temp 
-                
+
                 //si temp es el primer nodo
-                if (temp == null){
+                if (temp == null) {
                     adicionarNodo(nuevo);
-                } else if(temp.getAnterior() == null){
+                } else if (temp.getAnterior() == null) {
                     adicionarNodoAlInicio(nuevo);
                 } else {
                     //se crea el nuevo nodo del piloto
                     NodoGP temp2 = new NodoGP(nuevo);
-                    
+
                     //se le asigna su anterior y siguiente
                     temp2.setAnterior(temp.getAnterior());
                     temp2.setSiguiente(temp);
-                    
+
                     //ahora se reasignan el nuevo nodo a siguiente y anterior
                     //de los nodos que lo rodean
                     temp.getAnterior().setSiguiente(temp2);
                     temp.setAnterior(temp2);
                 }
-            }
-            //si no existe en la lista
+            } //si no existe en la lista
             else {
                 throw new PilotoException("La posición dada no existe en la lista");
             }
         } else {
             throw new PilotoException("La lista de pilotos está vacía");
         }
-        
+
     }
-    
-    public short obtenerPosicion(short codigo) throws PilotoException{
+
+    public short obtenerPosicion(short codigo) throws PilotoException {
         if (cabeza == null) {
             throw new PilotoException("La lista de pilotos está vacía");
         } else {
@@ -248,20 +246,50 @@ public class ListaGP {
             throw new PilotoException("El código " + codigo + " no existe en la lista");
         }
     }
-    
-    public byte obtenerMenorEdad() throws PilotoException{
+
+    public byte obtenerMenorEdad() throws PilotoException {
         if (cabeza == null) {
             throw new PilotoException("La lista de pilotos está vacía");
         } else {
             NodoGP temp = cabeza;
             byte menor = temp.getDato().getEdad();
             while (temp != null) {
-                if (temp.getDato().getEdad() < menor)
+                if (temp.getDato().getEdad() < menor) {
                     menor = temp.getDato().getEdad();
+                }
                 temp = temp.getSiguiente();
             }
             return menor;
         }
     }
-    
+
+    public void intercambiarNodos(byte datoA, byte datoB) throws PilotoException {
+        if (cabeza != null) {
+            throw new PilotoException("La lista de pilotos está vacía");
+        } else {
+            NodoGP temp = cabeza;
+            NodoGP tempDatoA = null;
+            NodoGP tempDatoB = null;
+
+            while (temp != null) {
+                if (temp.getDato().getCodigo() == datoA) {
+                    tempDatoA = temp;
+                } else if (temp.getDato().getCodigo() == datoB) {
+                    tempDatoB = temp;
+                    temp = temp.getSiguiente();
+                }
+
+                if (tempDatoA == null || tempDatoB == null) {
+                    throw new PilotoException("Alguno de los datos no se encuentra en la lista.");
+                }
+
+                Piloto pilotoTemp = tempDatoA.getDato();
+
+                tempDatoA.setDato(tempDatoB.getDato());
+                tempDatoB.setDato(pilotoTemp);
+
+            }
+
+        }
+    }
 }

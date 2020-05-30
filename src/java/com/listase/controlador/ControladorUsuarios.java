@@ -15,6 +15,7 @@ import com.listase.modelo.Usuario;
  * @author carloaiza
  */
 public class ControladorUsuarios {
+
     private List<TipoUsuario> tiposUsuario;
     private List<Usuario> usuarios;
 
@@ -37,40 +38,32 @@ public class ControladorUsuarios {
     public void setUsuarios(List<Usuario> usuarios) {
         this.usuarios = usuarios;
     }
-    
-    
-    
-    private void iniciarListados()
-    {
+
+    private void iniciarListados() {
         //Simula la conexion a bds o archivos planos
         tiposUsuario = new ArrayList<>();
-        tiposUsuario.add(new TipoUsuario(1,"Administrador"));
-        tiposUsuario.add(new TipoUsuario(2,"Corriente"));
-        
+        tiposUsuario.add(new TipoUsuario(1, "Administrador"));
+        tiposUsuario.add(new TipoUsuario(2, "Corriente"));
+
         usuarios = new ArrayList<>();
-        
-        usuarios.add(new Usuario("pepito@yahoo.com","123456","Pepito Perez",
-        tiposUsuario.get(1)));
-        
-        usuarios.add(new Usuario("ebedoya@umanizales.edu.co","qwerty","Esteban Bedoya",
-        tiposUsuario.get(0)));
+
+        usuarios.add(new Usuario("pepito@yahoo.com", "123456", "Pepito Perez",
+                tiposUsuario.get(1)));
+
+        usuarios.add(new Usuario("ebedoya@umanizales.edu.co", "qwerty", "Esteban Bedoya",
+                tiposUsuario.get(0)));
     }
-    
-    
-    public Usuario encontrarUsuarioxCorreo(String correo)
-    {
+
+    public Usuario encontrarUsuarioxCorreo(String correo) {
         Usuario usuarioEncontrado = null;
         //Recorre la lista de principio a fin 
-        for(Usuario usu: this.usuarios)
-        {
-            if(usu.getCorreo().equals(correo))
-            {
+        for (Usuario usu : this.usuarios) {
+            if (usu.getCorreo().equals(correo)) {
                 return usu;
             }
         }
-        
+
         return usuarioEncontrado;
     }
-    
-    
+
 }

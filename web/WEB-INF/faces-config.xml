@@ -10,4 +10,19 @@
             <to-view-id>/inicioListas.xhtml</to-view-id>
         </navigation-case>
     </navigation-rule>
+    <managed-bean>
+        <managed-bean-name>clasificacion</managed-bean-name>
+        <managed-bean-class>com.listase.modelo.motogp.Clasificacion</managed-bean-class>
+        <managed-bean-scope>request</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>applicationPirinola</managed-bean-name>
+        <managed-bean-class>com.listase.controlador.ApplicationPirinola</managed-bean-class>
+        <managed-bean-scope>application</managed-bean-scope>
+    </managed-bean>
+    <managed-bean>
+        <managed-bean-name>applicationPirinola1</managed-bean-name>
+        <managed-bean-class>com.listase.controlador.ApplicationPirinola</managed-bean-class>
+        <managed-bean-scope>application</managed-bean-scope>
+    </managed-bean>
 </faces-config>
