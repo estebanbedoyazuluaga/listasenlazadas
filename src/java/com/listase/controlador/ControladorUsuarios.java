@@ -17,7 +17,7 @@ import com.listase.modelo.Usuario;
 public class ControladorUsuarios {
 
     private List<TipoUsuario> tiposUsuario;
-    private List<Usuario> usuarios;
+    private static List<Usuario> usuarios;
 
     public ControladorUsuarios() {
         this.iniciarListados();
@@ -31,12 +31,12 @@ public class ControladorUsuarios {
         this.tiposUsuario = tiposUsuario;
     }
 
-    public List<Usuario> getUsuarios() {
+    public static List<Usuario> getUsuarios() {
         return usuarios;
     }
 
     public void setUsuarios(List<Usuario> usuarios) {
-        this.usuarios = usuarios;
+        ControladorUsuarios.usuarios = usuarios;
     }
 
     private void iniciarListados() {
@@ -46,18 +46,22 @@ public class ControladorUsuarios {
         tiposUsuario.add(new TipoUsuario(2, "Corriente"));
 
         usuarios = new ArrayList<>();
-
-        usuarios.add(new Usuario("pepito@yahoo.com", "123456", "Pepito Perez",
-                tiposUsuario.get(1)));
-
-        usuarios.add(new Usuario("ebedoya@umanizales.edu.co", "qwerty", "Esteban Bedoya",
+        
+        usuarios.add(new Usuario("ebedoya@umanizales.edu.co", "qwer", "esteban",
                 tiposUsuario.get(0)));
+        usuarios.add(new Usuario("fulano@mail.com", "1234", "fulano",
+                tiposUsuario.get(1)));
+        usuarios.add(new Usuario("sultano@mail.com", "1234", "sultano",
+                tiposUsuario.get(1)));
+        usuarios.add(new Usuario("mengano@mail.com", "1234", "mengano",
+                tiposUsuario.get(1)));
+        
     }
 
     public Usuario encontrarUsuarioxCorreo(String correo) {
         Usuario usuarioEncontrado = null;
         //Recorre la lista de principio a fin 
-        for (Usuario usu : this.usuarios) {
+        for (Usuario usu : ControladorUsuarios.usuarios) {
             if (usu.getCorreo().equals(correo)) {
                 return usu;
             }

@@ -11,19 +11,27 @@ package com.listase.modelo.pirinola;
  */
 public class Jugador {
     private String nombre;
+    private String correo;
     private int fichas;
    
 
-    public Jugador(String nombre, int fichas) {
+    public Jugador(String nombre, String correo, int fichas) {
         this.fichas = fichas;
+        this.correo = correo;
         this.nombre = nombre;
     }
 
     public Jugador() {
     }
 
-    
-    
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
     public int getFichas() {
         return fichas;
     }

@@ -20,9 +20,11 @@
         <managed-bean-class>com.listase.controlador.ApplicationPirinola</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
+    <!--
     <managed-bean>
         <managed-bean-name>applicationPirinola1</managed-bean-name>
         <managed-bean-class>com.listase.controlador.ApplicationPirinola</managed-bean-class>
         <managed-bean-scope>application</managed-bean-scope>
     </managed-bean>
+    -->
 </faces-config>

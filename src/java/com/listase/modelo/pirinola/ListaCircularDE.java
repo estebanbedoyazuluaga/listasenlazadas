@@ -119,4 +119,33 @@ public class ListaCircularDE implements Serializable {
             throw new JugadorException(("No existen jugadors en la lista"));
         }
     }
+    
+    public int obtenerMayoresFichas() throws JugadorException {
+        if (cabeza == null) {
+            throw new JugadorException("La lista de pilotos está vacía");
+        } else {
+            NodoCircularDE temp = cabeza;
+            int max = temp.getDato().getFichas();
+            do {
+                if (temp.getDato().getFichas() > max) {
+                    max = temp.getDato().getFichas();
+                }
+                temp = temp.getSiguiente();
+            } while (temp != cabeza);
+            return max;
+        }
+    }
+    
+    public String obtenerGanadores()throws JugadorException{
+        int numFichas = obtenerMayoresFichas();
+        NodoCircularDE temp = cabeza;
+        String ganadores="";
+        do{
+            if (temp.getDato().getFichas() == numFichas)
+                ganadores += temp.getDato().getNombre() + ", ";
+            temp=temp.getSiguiente();
+        }while(temp!=cabeza);
+        return ganadores;
+    }
+    
 }

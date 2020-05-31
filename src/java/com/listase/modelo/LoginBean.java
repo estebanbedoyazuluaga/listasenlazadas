@@ -5,6 +5,7 @@
  */
 package com.listase.modelo;
 
+import com.listase.controlador.ApplicationPirinola;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -20,10 +21,10 @@ import com.listase.utilidades.JsfUtil;
 public class LoginBean implements Serializable {
 
     //Atributo para ocultar o visualizar el panel del login
-    private boolean verPanelLogin = false;
+    private boolean verPanelLogin = true;
 
     //Atributo para capturar el texto para mostrar en el saludo
-    private String textoSaludo = "";
+    //private String textoSaludo = "";
 
     //Atributo contador para los saludos
     private short contadorSaludos = 0;
@@ -99,5 +100,5 @@ public class LoginBean implements Serializable {
 
         return null;
     }
-
+    
 }

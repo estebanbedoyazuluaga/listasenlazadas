@@ -11,7 +11,7 @@ and open the template in the editor.
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <title>
-            La Pirinola
+            La Pirinola #{loginBean.correo}
         </title>
 
         <style type="text/css">
@@ -50,12 +50,22 @@ and open the template in the editor.
         </style>
     </h:head>
     <h:body>
-        <h:form>
-            <!--  -->
+        <h:form id="frmPirinola">
+           
 
             <p:growl id="msgs" showDetail="true" />
-            <p:fieldset legend="Panel de Administrador" toggleable="true" toggleSpeed="100">
-                <p:ajax event="toggle" listener="#{ApplicationPirinola.handleToggle}" update="msgs" />
+            <p:poll interval="5" update="frmPirinola" />
+            
+            <!-- El panel de administrador se usó para probar el diagrama circular de jugadores -->
+            <p:fieldset rendered="false" 
+                        legend="Panel de Administrador" 
+                        toggleable="true" toggleSpeed="100">
+                <!-- 
+                
+                <p:ajax event="toggle" listener="#{ApplicationPirinola.handleToggle}" update="msgs" /> 
+                
+                -->
+                
 
                 <h:panelGrid columns="3">
 
@@ -72,22 +82,14 @@ and open the template in the editor.
                                          action="#{ApplicationPirinola.agregarJugador()}" 
                                          update="diagrama"/>
                     </p:panel>
-                    
+
                     <p:panel header="Eliminar Jugador">
                         <p:inputText value="#{ApplicationPirinola.jugadorAEliminar}" />
                         <p:commandButton value="Eliminar" 
                                          action="#{ApplicationPirinola.eliminarJugador()}" 
                                          update="diagrama,msgs"/>
                     </p:panel>
-                    
-                    <p:panel header="Controles">
-                        <p:commandButton value="Anterior" 
-                                         action="#{ApplicationPirinola.verAnterior()}" 
-                                         update="diagrama,msgs"/>
-                        <p:commandButton value="Siguiente" 
-                                         action="#{ApplicationPirinola.verSiguiente()}" 
-                                         update="diagrama,msgs"/>
-                    </p:panel>
+
                     <p:panel header="Controles">
                         <p:commandButton value="Anterior" 
                                          action="#{ApplicationPirinola.verAnterior()}" 
@@ -97,19 +99,38 @@ and open the template in the editor.
                                          update="diagrama,msgs"/>
                     </p:panel>
 
-                    
-                    
+
+
 
                 </h:panelGrid>
             </p:fieldset>
 
-
+            <p:panelGrid columns="4" >
+                <p:commandButton value="¡Girar!" 
+                                 update="frmPirinola" 
+                                 disabled="#{!(ApplicationPirinola.validarTurno(loginBean.usuarioAutenticado.correo) and ApplicationPirinola.inGame)}"
+                                 action="#{ApplicationPirinola.pasarTurno(loginBean.usuarioAutenticado.correo)}" />
+                
+                
+                
+                <p:outputLabel value="Turno actual: #{ApplicationPirinola.correoTurno}" 
+                               rendered="#{ApplicationPirinola.inGame}" />
+                
+                <p:outputLabel rendered="#{!ApplicationPirinola.inGame}" 
+                               value="Ha ganago: #{ApplicationPirinola.listaJugadores.cabeza.dato.correo}" />
+                
+                <p:commandButton value="¡Girar(No Auth)!" 
+                                 update="frmPirinola" 
+                                 disabled="#{!ApplicationPirinola.inGame}"
+                                 rendered="#{loginBean.usuarioAutenticado.tipoUsuario.codigo eq 1}"
+                                 action="#{ApplicationPirinola.girarPirinola()}" />
+            </p:panelGrid>
+            
             <p:diagram id="diagrama"
-                       value="#{ApplicationPirinola.model}" 
-                       style="height:600px; width: 100%;" 
-                       styleClass="ui-widget-content" />
-
-
+                           value="#{ApplicationPirinola.model}" 
+                           style="height:600px; width: 100%;" 
+                           styleClass="ui-widget-content" />
+            
         </h:form>
 
 

@@ -6,9 +6,11 @@
 package com.listase.controlador;
 
 import com.listase.excepciones.JugadorException;
+import com.listase.modelo.Usuario;
 import com.listase.modelo.pirinola.Jugador;
 import com.listase.modelo.pirinola.ListaCircularDE;
 import com.listase.modelo.pirinola.NodoCircularDE;
+import java.io.Serializable;
 import javax.inject.Named;
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.application.FacesMessage;
@@ -30,122 +32,166 @@ import org.primefaces.model.diagram.overlay.LabelOverlay;
  */
 @Named(value = "ApplicationPirinola")
 @ApplicationScoped
-public class ApplicationPirinola {
+public class ApplicationPirinola implements Serializable{
 
-    private ListaCircularDE jugadores;
+    private String correoTurno;
 
-    private NodoCircularDE ayudante;
+    private ListaCircularDE listaJugadores;
 
-    private Jugador jugadorActual;
+    private NodoCircularDE jugadorActual;
 
-    private int caja;
+    private int caja = 10;
 
-    private int rondasFaltantes;
+    private int turnosFaltantes = 20;
+
+    private boolean inGame=true;
     
-
-    //INICIO: variables para el menu de opciones.
+    //variables para el menu de opciones.
     private String jugadorAEliminar;
-    
-    private Jugador nuevoJugador;
-    
-    //para la vista del diagrama de jugadores
+    private Jugador nuevoJugador = new Jugador();
+
+    //para la vista del diagrama de listaJugadores
     private DefaultDiagramModel model;
 
     public ApplicationPirinola() {
+
+        caja = 10;
+        turnosFaltantes = 20;
         
-        nuevoJugador = new Jugador();
+        listaJugadores = new ListaCircularDE();
+
+        cargarJugadores();
+
+        correoTurno = ControladorUsuarios.getUsuarios().get(0).getCorreo();
         
-        jugadores = new ListaCircularDE();
-        
-        jugadores.adicionarNodo(new Jugador("esteban", 69));
-        jugadores.adicionarNodo(new Jugador("juan", 42));
-        jugadores.adicionarNodo(new Jugador("andres", 28));
-        jugadores.adicionarNodo(new Jugador("santiago", 6));
+        jugadorActual = listaJugadores.getCabeza();
         
         pintarJugadores();
     }
 
-    public void girarPirinola() {
+    public boolean validarTurno(String correo) {
+        if (turnosFaltantes <= 0) {
+            return false;
+        }
+        if (this.correoTurno.equals(correo)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void pasarTurno(String correo) throws JugadorException {
+        this.correoTurno = jugadorActual.getSiguiente().getDato().getCorreo();
+        girarPirinola();
+    }
+
+    public void girarPirinola() throws JugadorException {
+
         double randomDouble = Math.random();
         randomDouble = randomDouble * 6 + 1;
         int randomInt = (int) randomDouble;
 
+        int fichas = jugadorActual.getDato().getFichas();
+
         switch (randomInt) {
             case 1:
-                ponerUno();
+                //pon 1
+                if (fichas >= 1) {
+                    jugadorActual.getDato().setFichas(fichas - 1);
+                    this.caja++;
+                }
+
                 break;
             case 2:
-                ponerDos();
+                //pon 2
+                if (fichas >= 2) {
+                    jugadorActual.getDato().setFichas(fichas - 2);
+                    this.caja += 2;
+                } else {
+                    jugadorActual.getDato().setFichas(0);
+                    this.caja += fichas;
+                }
                 break;
             case 3:
-                tomarUno();
+                //toma 1
+                if (caja >= 1) {
+                    jugadorActual.getDato().setFichas(fichas + 1);
+                    this.caja--;
+                }
                 break;
             case 4:
-                tomarDos();
+                //toma 2
+                if (caja >= 2) {
+                    jugadorActual.getDato().setFichas(fichas + 2);
+                    this.caja -= 2;
+                } else {
+                    jugadorActual.getDato().setFichas(fichas + caja);
+                    this.caja = 0;
+                }
+
                 break;
             case 5:
-                tomarTodo();
-                break;
+                //toma todo
+                jugadorActual.getDato().setFichas(fichas + caja);
+                caja = 0;
             case 6:
-                todosPonen();
+                //todos ponen
+                NodoCircularDE temp = jugadorActual;
+                do {
+                    if (temp.getDato().getFichas() >= 1) {
+                        temp.getDato().setFichas(temp.getDato().getFichas() - 1);
+                        this.caja++;
+                    }
+                    if (temp.getDato().getFichas() <= 0) {
+                        listaJugadores.eliminarNodo(temp.getDato().getNombre());
+                    }
+                    temp = temp.getSiguiente();
+
+                } while (temp != jugadorActual);
                 break;
         }
-        ayudante = ayudante.getSiguiente();
+
+        if (caja <= 0) {
+            caja = 0;
+        }
+
+        jugadorActual = jugadorActual.getSiguiente();
+        listaJugadores.setCabeza(jugadorActual.getSiguiente());
+
+        if (jugadorActual.getAnterior().getDato().getFichas() <= 0) {
+            listaJugadores.eliminarNodo(jugadorActual.getAnterior().getDato().getNombre());
+        }
+
+        if (listaJugadores.contarNodos() == 1) {
+            inGame = false;
+        }
         pintarJugadores();
+
     }
     
-    private void ponerUno() {
-        jugadorActual = ayudante.getDato();
-        jugadorActual.setFichas(jugadorActual.getFichas() - 1);
-        this.caja++;
-    }
-    private void ponerDos() {
-        jugadorActual = ayudante.getDato();
-        jugadorActual.setFichas(jugadorActual.getFichas() - 2);
-        this.caja += 2;
-    }
-    private void tomarUno() {
-        jugadorActual = ayudante.getDato();
-        jugadorActual.setFichas(jugadorActual.getFichas() + 1);
-        this.caja--;
-    }
-    private void tomarDos() {
-        jugadorActual = ayudante.getDato();
-        jugadorActual.setFichas(jugadorActual.getFichas() - 2);
-        this.caja -= 2;
-    }
-    private void tomarTodo() {
-        jugadorActual = ayudante.getDato();
-        jugadorActual.setFichas(jugadorActual.getFichas() + caja);
-        caja = 0;
-    }
-    private void todosPonen() {
-        NodoCircularDE temp = ayudante;
-        do {
-            temp.getDato().setFichas(temp.getDato().getFichas() - 1);
-            this.caja -= 1;
-            temp = temp.getSiguiente();
-        } while (temp != ayudante);
-    }
-    
-    public void eliminarJugador() throws JugadorException{
-        jugadores.eliminarNodo(jugadorAEliminar);
+    //<editor-fold defaultstate="collapsed" desc="Acciones del panel de administrador(DESHABILITADO)">
+    public void eliminarJugador() throws JugadorException {
+        listaJugadores.eliminarNodo(jugadorAEliminar);
         pintarJugadores();
     }
-    public void agregarJugador(){
-        if(!nuevoJugador.getNombre().equals("")){
-            jugadores.adicionarNodo(nuevoJugador);
+
+    public void agregarJugador() {
+        if (!nuevoJugador.getNombre().equals("")) {
+            listaJugadores.adicionarNodo(nuevoJugador);
             pintarJugadores();
         }
     }
-    public void verSiguiente(){
-        jugadores.setCabeza(jugadores.getCabeza().getSiguiente());
+
+    public void verSiguiente() {
+        listaJugadores.setCabeza(listaJugadores.getCabeza().getSiguiente());
         pintarJugadores();
     }
-    public void verAnterior(){
-        jugadores.setCabeza(jugadores.getCabeza().getAnterior());
+
+    public void verAnterior() {
+        listaJugadores.setCabeza(listaJugadores.getCabeza().getAnterior());
         pintarJugadores();
     }
+
+//</editor-fold>
     
     private Connection createConnection(EndPoint from, EndPoint to, String label) {
         Connection conn = new Connection(from, to);
@@ -157,7 +203,7 @@ public class ApplicationPirinola {
 
         return conn;
     }
-    public void pintarJugadores(){
+    public void pintarJugadores() {
         //Instancia el modelo
         model = new DefaultDiagramModel();
         //Se establece para que el diagrama pueda tener infinitas flechas
@@ -169,32 +215,42 @@ public class ApplicationPirinola {
         model.setDefaultConnector(connector);
 
         ///Adicionar los elementos
-        if (jugadores.getCabeza() != null) {
-            //llamo a mi ayudante
-            NodoCircularDE temp = jugadores.getCabeza();
-            
-            //variables para la posicion de los elementos en el diagrama
+        if (listaJugadores.getCabeza() != null) {
+            //llamo a mi jugadorActual
+            NodoCircularDE temp = listaJugadores.getCabeza();
+
+            /**
+             * variables para la posicion de los elementos en el diagrama:
+             * 
+             *      'posY' y 'posX': indican el centro del circulo
+             *      'numElementos': indica el total de los puntos que se van a distribuir
+             *      'angle': indica el ángulo en el que se dibujará el punto
+             *      'cont': indica el número 
+             */
             double posX;
             double posY;
-            int numElementos = jugadores.contarNodos();
+            int numElementos = listaJugadores.contarNodos();
             double angle;
-            int cont = 0;
+            int cont = 0;//
+            
+            
             //recorro la lista de principio a fin
             do {
-                //Parado en un elemento
-                //Crea el cuadrito y lo adiciona al modelo
                 
+
                 //calculando la posición del elemento:
-                //angle=angulo en el cual se dibujara el elemento
-                angle= (2*Math.PI*cont)/numElementos;
-                //para acomodar el primer jugador a 90 grados de la horizontal:
-                angle += (1.5*Math.PI);
+                angle = (2 * Math.PI * cont) / numElementos;
                 
-                posX = 35 + (15*Math.cos(angle));
-                posY = 15 + (15*Math.sin(angle));
+                //para acomodar el primer jugador a 90 grados de la horizontal:
+                angle += (1.5 * Math.PI);
+
+                posX = 35 + (15 * Math.cos(angle));
+                posY = 15 + (15 * Math.sin(angle));
                 cont++;
                 
-                Element ele = new Element(temp.getDato().getNombre() + ": " + temp.getDato().getFichas(), 
+                //Parado en un elemento
+                //Crea el cuadrito y lo adiciona al modelo
+                Element ele = new Element(temp.getDato().getNombre() + ": " + temp.getDato().getFichas(),
                         posX + "em", posY + "em");
                 ele.setId(String.valueOf(temp.getDato().getNombre()));
                 //adiciona un conector al cuadrito
@@ -203,21 +259,17 @@ public class ApplicationPirinola {
 
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_LEFT));
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
-//                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.TOP));
-//                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.RIGHT));
-//                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
-//                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.LEFT));
 
                 //si es el primer elemento, añadirlo a la clase css que lo pone morado.
-                if (temp == jugadores.getCabeza()){
+                if (temp == listaJugadores.getCabeza()) {
                     ele.setStyleClass("ui-diagram-primero");
                 }
-                
+
                 model.addElement(ele);
-                
+
                 temp = temp.getSiguiente();
-                
-            } while (temp != jugadores.getCabeza());
+
+            } while (temp != listaJugadores.getCabeza());
 
             //Pinta las flechas            
             for (int i = 0; i < model.getElements().size() - 1; i++) {
@@ -227,33 +279,44 @@ public class ApplicationPirinola {
                 model.connect(createConnection(model.getElements().get(i + 1).getEndPoints().get(2),
                         model.getElements().get(i).getEndPoints().get(3), "Ant"));
             }
+            
+            //pone un elemento en el centro del diagrama con las fichas en la caja
+            model.addElement(new Element("Caja: " + this.caja, 35 + "em", 15 + "em"));
+        }
+    }
 
+    private void cargarJugadores(){
+        listaJugadores = new ListaCircularDE();
+        for (Usuario usuario : ControladorUsuarios.getUsuarios()) {
+            listaJugadores.adicionarNodo(
+                    new Jugador(usuario.getNombreCompleto(),usuario.getCorreo(), 15)
+            );
         }
     }
     
-
     //<editor-fold defaultstate="collapsed" desc="Métodos de Acceso">
-    public ListaCircularDE getJugadores() {
-        return jugadores;
+
+    public boolean isInGame() {
+        return inGame;
     }
 
-    public void setJugadores(ListaCircularDE jugadores) {
-        this.jugadores = jugadores;
+    public void setInGame(boolean inGame) {
+        this.inGame = inGame;
+    }
+    
+    public ListaCircularDE getListaJugadores() {
+        return listaJugadores;
     }
 
-    public NodoCircularDE getAyudante() {
-        return ayudante;
+    public void setListaJugadores(ListaCircularDE listaJugadores) {
+        this.listaJugadores = listaJugadores;
     }
 
-    public void setAyudante(NodoCircularDE ayudante) {
-        this.ayudante = ayudante;
-    }
-
-    public Jugador getJugadorActual() {
+    public NodoCircularDE getJugadorActual() {
         return jugadorActual;
     }
 
-    public void setJugadorActual(Jugador jugadorActual) {
+    public void setJugadorActual(NodoCircularDE jugadorActual) {
         this.jugadorActual = jugadorActual;
     }
 
@@ -265,12 +328,20 @@ public class ApplicationPirinola {
         this.caja = caja;
     }
 
-    public int getRondasFaltantes() {
-        return rondasFaltantes;
+    public String getCorreoTurno() {
+        return correoTurno;
     }
 
-    public void setRondasFaltantes(int rondasFaltantes) {
-        this.rondasFaltantes = rondasFaltantes;
+    public void setCorreoTurno(String correoTurno) {
+        this.correoTurno = correoTurno;
+    }
+
+    public int getTurnosFaltantes() {
+        return turnosFaltantes;
+    }
+
+    public void setTurnosFaltantes(int turnosFaltantes) {
+        this.turnosFaltantes = turnosFaltantes;
     }
 
     public DefaultDiagramModel getModel() {
@@ -296,9 +367,7 @@ public class ApplicationPirinola {
     public void setNuevoJugador(Jugador nuevoJugador) {
         this.nuevoJugador = nuevoJugador;
     }
-    
-    
-    
+
 //</editor-fold>
     
     public void handleToggle(ToggleEvent event) {
