@@ -70,16 +70,14 @@ public class ApplicationPirinola implements Serializable{
     }
 
     public boolean validarTurno(String correo) {
-        if (turnosFaltantes <= 0) {
-            return false;
-        }
+        
         if (this.correoTurno.equals(correo)) {
             return true;
         }
         return false;
     }
 
-    public void pasarTurno(String correo) throws JugadorException {
+    public void pasarTurno() throws JugadorException {
         this.correoTurno = jugadorActual.getSiguiente().getDato().getCorreo();
         girarPirinola();
     }

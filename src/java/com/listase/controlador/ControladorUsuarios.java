@@ -44,6 +44,9 @@ public class ControladorUsuarios {
         tiposUsuario = new ArrayList<>();
         tiposUsuario.add(new TipoUsuario(1, "Administrador"));
         tiposUsuario.add(new TipoUsuario(2, "Corriente"));
+        //tiposUsuario.add(new TipoUsuario(3, "El de los tintos"));
+        // [  admin  ,  corriente  , el de los tintos]
+        //       0   ,   1         ,  3
 
         usuarios = new ArrayList<>();
         

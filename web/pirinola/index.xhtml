@@ -109,7 +109,7 @@ and open the template in the editor.
                 <p:commandButton value="¡Girar!" 
                                  update="frmPirinola" 
                                  disabled="#{!(ApplicationPirinola.validarTurno(loginBean.usuarioAutenticado.correo) and ApplicationPirinola.inGame)}"
-                                 action="#{ApplicationPirinola.pasarTurno(loginBean.usuarioAutenticado.correo)}" />
+                                 action="#{ApplicationPirinola.pasarTurno()}" />
                 
                 
                 
