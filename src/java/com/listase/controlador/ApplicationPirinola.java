@@ -34,8 +34,10 @@ import org.primefaces.model.diagram.overlay.LabelOverlay;
 @ApplicationScoped
 public class ApplicationPirinola implements Serializable{
 
+    private String msgUltimaAccion;
+    
     private String correoTurno;
-
+    
     private ListaCircularDE listaJugadores;
 
     private NodoCircularDE jugadorActual;
@@ -93,14 +95,16 @@ public class ApplicationPirinola implements Serializable{
         switch (randomInt) {
             case 1:
                 //pon 1
+                msgUltimaAccion = jugadorActual.getDato().getNombre() + ": Pon uno";
                 if (fichas >= 1) {
                     jugadorActual.getDato().setFichas(fichas - 1);
                     this.caja++;
                 }
-
+                
                 break;
             case 2:
                 //pon 2
+                msgUltimaAccion = jugadorActual.getDato().getNombre() + ": Pon dos";
                 if (fichas >= 2) {
                     jugadorActual.getDato().setFichas(fichas - 2);
                     this.caja += 2;
@@ -111,6 +115,7 @@ public class ApplicationPirinola implements Serializable{
                 break;
             case 3:
                 //toma 1
+                msgUltimaAccion = jugadorActual.getDato().getNombre() + ": Toma uno";
                 if (caja >= 1) {
                     jugadorActual.getDato().setFichas(fichas + 1);
                     this.caja--;
@@ -118,6 +123,7 @@ public class ApplicationPirinola implements Serializable{
                 break;
             case 4:
                 //toma 2
+                msgUltimaAccion = jugadorActual.getDato().getNombre() + ": Toma dos";
                 if (caja >= 2) {
                     jugadorActual.getDato().setFichas(fichas + 2);
                     this.caja -= 2;
@@ -129,10 +135,12 @@ public class ApplicationPirinola implements Serializable{
                 break;
             case 5:
                 //toma todo
+                msgUltimaAccion = jugadorActual.getDato().getNombre() + ": Toma todo";
                 jugadorActual.getDato().setFichas(fichas + caja);
                 caja = 0;
             case 6:
                 //todos ponen
+                msgUltimaAccion = jugadorActual.getDato().getNombre() + ": Todos ponen";
                 NodoCircularDE temp = jugadorActual;
                 do {
                     if (temp.getDato().getFichas() >= 1) {
@@ -293,6 +301,14 @@ public class ApplicationPirinola implements Serializable{
     }
     
     //<editor-fold defaultstate="collapsed" desc="Métodos de Acceso">
+
+    public String getMsgUltimaAccion() {
+        return msgUltimaAccion;
+    }
+
+    public void setMsgUltimaAccion(String msgUltimaAccion) {
+        this.msgUltimaAccion = msgUltimaAccion;
+    }
 
     public boolean isInGame() {
         return inGame;

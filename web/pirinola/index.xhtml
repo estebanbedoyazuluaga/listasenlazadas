@@ -116,6 +116,9 @@ and open the template in the editor.
                 <p:outputLabel value="Turno actual: #{ApplicationPirinola.correoTurno}" 
                                rendered="#{ApplicationPirinola.inGame}" />
                 
+                <p:outputLabel value="Última acción: #{ApplicationPirinola.msgUltimaAccion}" 
+                               rendered="#{ApplicationPirinola.inGame}" />
+                
                 <p:outputLabel rendered="#{!ApplicationPirinola.inGame}" 
                                value="Ha ganago: #{ApplicationPirinola.listaJugadores.cabeza.dato.correo}" />
                 
