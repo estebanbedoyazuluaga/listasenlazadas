@@ -5,13 +5,15 @@ import java.io.Serializable;
 
 public class Piloto implements Serializable{
 
-    
-    String nombre,nacionalidad,color;
-    byte edad,experiencia;
-    Moto moto;
-    short codigo;
-
-    public Piloto(String nombre, String nacionalidad, String color, byte edad, byte experiencia, Moto moto, short codigo) {
+    private double tiempoClasi = 0;
+    private String nombre = "";
+    private String nacionalidad;
+    private String color = "";
+    private byte edad,experiencia;
+    private Moto moto;
+    private short codigo;
+ 
+    public Piloto(String nombre, String nacionalidad, String color, byte edad, byte experiencia, Moto moto, short codigo, double tiempoClasi) {
         this.nombre = nombre;
         this.nacionalidad = nacionalidad;
         this.color = color;
@@ -19,14 +21,22 @@ public class Piloto implements Serializable{
         this.experiencia = experiencia;
         this.moto = moto;
         this.codigo = codigo;
+        this.tiempoClasi = tiempoClasi;
     }
 
     public Piloto() {
     }
     
-    
+    //<editor-fold defaultstate="collapsed" desc="Metodos de acceso">    
 
-    //<editor-fold defaultstate="collapsed" desc="Metodos de acceso">
+    public double getTiempoClasi() {
+        return tiempoClasi;
+    }
+
+    public void setTiempoClasi(double tiempoClasi) {
+        this.tiempoClasi = tiempoClasi;
+    }
+    
     public String getNombre() {
         return nombre;
     }
@@ -89,7 +99,9 @@ public class Piloto implements Serializable{
         return this.nombre;
     }
 
-    
+    public String toStringMejor() {
+        return nombre + "{" + "Color=" + color + "; Tiempo_de_vuelta=" + tiempoClasi + '}';
+    }
     
     
 }

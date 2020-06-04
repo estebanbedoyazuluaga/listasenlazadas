@@ -19,10 +19,34 @@
                 color: #ffffff;
             }
 
-            .ui-diagram-menorEdad{
-                background-color: #7f00ff;
+            .ui-diagram-rosa{
+                background-color: #cc58d6;
             }
 
+            .ui-diagram-purpura{
+                background-color: #8d58d6;
+            }
+            
+            .ui-diagram-naranja{
+                background-color:  #FF5733;
+            }
+            
+            .ui-diagram-rojo{
+                background-color: #C70039;
+            }
+            
+            .ui-diagram-azul{
+                background-color:  #58a1d6;
+            }
+            
+            .ui-diagram-verde{
+                background-color: #58d68d;
+            }
+            
+            .ui-diagram-amarillo{
+                background-color: #FFC300;
+            }
+            
             .ui-diagram-success {
                 background-color: #9CB071;
                 color: #ffffff;
@@ -46,103 +70,138 @@
         <h:form id="frmPiloto">
             <p:commandButton value="Volver" action="inicio" />
             <p:panel header="Lista Doblemente Enlazada Pilotos - Total Pilotos #{SesionMotoGP.listaPilotos.contarNodos()}">
-                <p:panelGrid columns="3">
-                    <p:panel header="Datos Piloto">
-                        <p:panelGrid columns="2">
-                            <p:outputLabel for="txtNombre" value="Nombre"/>
-                            <p:inputText id="txtNombre" required="true" disabled="#{SesionMotoGP.deshabilitarFormulario}"
-                                         value="#{SesionMotoGP.piloto.nombre}"   />
-                            <p:outputLabel for="spEdad" value="Edad"/>
-                            <p:spinner id="spEdad" required="true" min="16" max="59" disabled="#{SesionMotoGP.deshabilitarFormulario}"
-                                       value="#{SesionMotoGP.piloto.edad}"/>
+                <p:fieldset rendered="#{SesionMotoGP.verPanelClasificacion}" legend="Panel de Administrador" 
+                            toggleable="true" toggleSpeed="100">
 
-                            <p:outputLabel for="spExp" value="Experiencia"/>
-                            <p:spinner id="spExp" required="true" min="0" max="43" disabled="#{SesionMotoGP.deshabilitarFormulario}"
-                                       value="#{SesionMotoGP.piloto.experiencia}"/>
+                    <p:ajax event="toggle" listener="#{SesionMotoGP.handleToggle}" update="grwlErrores,frmPiloto" /> 
+                    <p:panelGrid columns="3">
+                        <p:panel header="Datos Piloto">
+                            <p:panelGrid columns="2">
+                                <p:outputLabel for="txtNombre" value="Nombre"/>
+                                <p:inputText id="txtNombre" required="true" disabled="#{SesionMotoGP.deshabilitarFormulario}"
+                                             value="#{SesionMotoGP.piloto.nombre}"   />
+                                <p:outputLabel for="spEdad" value="Edad"/>
+                                <p:spinner id="spEdad" required="true" min="16" max="59" disabled="#{SesionMotoGP.deshabilitarFormulario}"
+                                           value="#{SesionMotoGP.piloto.edad}"/>
 
-                            <p:outputLabel value="Color"/>
-                            <p:selectOneMenu value="#{SesionMotoGP.piloto.color}"
-                                             disabled="#{SesionMotoGP.deshabilitarFormulario}">
-                                <f:selectItem itemLabel="Rosa" itemValue="Rosa"/>
-                                <f:selectItem itemLabel="Púrpura" itemValue="Púrpura"/>
-                                <f:selectItem itemLabel="Naranja" itemValue="Naranja"/>
-                                <f:selectItem itemLabel="Rojo" itemValue="Rojo"/>
-                                <f:selectItem itemLabel="Azúl" itemValue="Azúl"/>
-                                <f:selectItem itemLabel="Verde" itemValue="Verde"/>
-                                <f:selectItem itemLabel="Amarillo" itemValue="Amarillo"/>
-                            </p:selectOneMenu>
+                                <p:outputLabel for="spExp" value="Experiencia"/>
+                                <p:spinner id="spExp" required="true" min="0" max="43" disabled="#{SesionMotoGP.deshabilitarFormulario}"
+                                           value="#{SesionMotoGP.piloto.experiencia}"/>
 
-                            <p:outputLabel for="txtNacionalidad" value="Nacionalidad"/>
-                            <p:inputText id="txtNacionalidad" required="true" disabled="#{SesionMotoGP.deshabilitarFormulario}"
-                                         value="#{SesionMotoGP.piloto.nacionalidad}"   />
+                                <p:outputLabel value="Color"/>
+                                <p:selectOneMenu value="#{SesionMotoGP.piloto.color}"
+                                                 disabled="#{SesionMotoGP.deshabilitarFormulario}">
+                                    <f:selectItem itemLabel="(Seleccione uno)" itemValue=""/>
+                                    <f:selectItem itemLabel="Rosa" itemValue="rosa"/>
+                                    <f:selectItem itemLabel="Púrpura" itemValue="purpura"/>
+                                    <f:selectItem itemLabel="Naranja" itemValue="naranja"/>
+                                    <f:selectItem itemLabel="Rojo" itemValue="rojo"/>
+                                    <f:selectItem itemLabel="Azúl" itemValue="azul"/>
+                                    <f:selectItem itemLabel="Verde" itemValue="verde"/>
+                                    <f:selectItem itemLabel="Amarillo" itemValue="amarillo"/>
+                                </p:selectOneMenu>
 
-                            <p:outputLabel value="Al inicio"/>
-                            <p:selectOneMenu value="#{SesionMotoGP.alInicio}" disabled="#{SesionMotoGP.deshabilitarFormulario}">
-                                <f:selectItem itemLabel="SI" itemValue="1"/>
-                                <f:selectItem itemLabel="NO" itemValue="0"/>
-                            </p:selectOneMenu>
-                        </p:panelGrid>
-                        <p:commandButton value="Guardar" update="frmPiloto,:grwlErrores"
-                                         action="#{SesionMotoGP.guardarPiloto()}" disabled="#{SesionMotoGP.deshabilitarFormulario}"/>
+                                <p:outputLabel for="txtNacionalidad" value="Nacionalidad"/>
+                                <p:inputText id="txtNacionalidad" required="true" disabled="#{SesionMotoGP.deshabilitarFormulario}"
+                                             value="#{SesionMotoGP.piloto.nacionalidad}"   />
+                                
+                                <p:outputLabel for="numTiempo" value="Tiempo de vuelta"/>
+                                <p:inputNumber id="numTiempo" required="true" disabled="#{SesionMotoGP.deshabilitarFormulario}"
+                                             value="#{SesionMotoGP.piloto.tiempoClasi}"   />
 
-                        <p:commandButton value="Nuevo" update="frmPiloto" action="#{SesionMotoGP.habilitarFormulario()}"
-                                         disabled="#{!SesionMotoGP.deshabilitarFormulario}"
-                                         />
-                        <p:commandButton value="Invertir"  update="frmPiloto,:grwlErrores"
-                                         action="#{SesionMotoGP.invertirLista()}"
-                                         />
-                        <p:panelGrid columns="4">
-                            <p:commandButton value="Primero" action="#{SesionMotoGP.irPrimero()}" 
-                                             update="frmPiloto"/>
-                            <p:commandButton value="Anterior" action="#{SesionMotoGP.irAnterior()}"
-                                             update="frmPiloto"/>
-                            <p:commandButton value="Siguiente" action="#{SesionMotoGP.irSiguiente()}"
-                                             update="frmPiloto"/>       
-                            <p:commandButton value="Último" action="#{SesionMotoGP.irUltimo()}" 
-                                             update="frmPiloto"/>                           
+                                <p:outputLabel value="Al inicio"/>
+                                <p:selectOneMenu value="#{SesionMotoGP.alInicio}" disabled="#{SesionMotoGP.deshabilitarFormulario}">
+                                    <f:selectItem itemLabel="SI" itemValue="1"/>
+                                    <f:selectItem itemLabel="NO" itemValue="0"/>
+                                </p:selectOneMenu>
+                            </p:panelGrid>
+                            <p:commandButton value="Guardar" update="frmPiloto,:grwlErrores"
+                                             action="#{SesionMotoGP.guardarPiloto()}" 
+                                             disabled="#{SesionMotoGP.deshabilitarFormulario}"/>
 
-                        </p:panelGrid>
+                            <p:commandButton value="Nuevo" update="frmPiloto" action="#{SesionMotoGP.habilitarFormulario()}"
+                                             disabled="#{!(SesionMotoGP.deshabilitarFormulario 
+                                                           and 
+                                                          (loginBean.usuarioAutenticado.tipoUsuario.codigo eq 1) )}"
+                                             />
+                            <p:commandButton value="Invertir"  update="frmPiloto,:grwlErrores"
+                                             action="#{SesionMotoGP.invertirLista()}"
+                                             rendered="false"
+                                             />
+                            <p:commandButton value="Ordenar" update="frmPiloto,:grwlErrores" 
+                                             action="#{SesionMotoGP.ordenarPilotos()}"
+                                             rendered="false" />
+                            <br />
+                            <p:outputLabel value="Controles: " />
+                            <p:panelGrid columns="4">
+                                <p:commandButton value="Primero" action="#{SesionMotoGP.irPrimero()}" 
+                                                 update="frmPiloto"/>
+                                <p:commandButton value="Anterior" action="#{SesionMotoGP.irAnterior()}"
+                                                 update="frmPiloto"/>
+                                <p:commandButton value="Siguiente" action="#{SesionMotoGP.irSiguiente()}"
+                                                 update="frmPiloto"/>       
+                                <p:commandButton value="Último" action="#{SesionMotoGP.irUltimo()}" 
+                                                 update="frmPiloto"/>                           
+
+                            </p:panelGrid>
+
+                            <p:panelGrid rendered="false" columns="3">
+                                <p:inputNumber value="#{SesionMotoGP.pilotoAIntercambiarA}" maxlength="4" size="10"/>
+                                <p:inputNumber value="#{SesionMotoGP.pilotoAIntercambiarB}" maxlength="4" size="10"/>
+                                <p:commandButton value="Intercambiar" action="#{SesionMotoGP.intercambiarPilotos()}" 
+                                                 update="frmPiloto,:grwlErrores,pnlVista"
+                                                 />
+
+                            </p:panelGrid>
+
+                            <p:outputLabel value="Código a eliminar: "/>
+                            <p:spinner value="#{SesionMotoGP.codigoEliminar}" min="0" max="32767"
+                                           disabled="#{loginBean.usuarioAutenticado.tipoUsuario.codigo != 1}"/>
+                            <p:commandButton value="Eliminar" action="#{SesionMotoGP.eliminarPiloto()}" 
+                                             update="frmPiloto,:grwlErrores"
+                                             disabled="#{loginBean.usuarioAutenticado.tipoUsuario.codigo != 1}"
+                                             />
+                        </p:panel>
+                        <p:panel header="Reportes">
+                            <p:outputLabel value="Promedio de Edad de los pilotos: #{SesionMotoGP.listaPilotos.promediarEdades()}"/>
+                            <br/>
+                            Pilotos que correrán en la carrera: 
+                            <br/>
+                            <p:outputLabel value="#{SesionMotoGP.listaPilotos.obtenerListadoPilotos()}"/>
+
+                        </p:panel>
                         
-                        <p:panelGrid columns="3">
-                            <p:inputText value="#{SesionMotoGP.pilotoAIntercambiarA}" maxlength="4" size="10"/>
-                            <p:inputText value="#{SesionMotoGP.pilotoAIntercambiarB}" maxlength="4" size="10"/>
-                            <p:commandButton value="Intercambiar" action="#{SesionMotoGP.intercambiarPilotos()}" 
-                                         update="frmPiloto,:grwlErrores,pnlVista"
-                                         />
-                            
-                        </p:panelGrid>
+                        <p:commandButton value="Empezar la carrera" action="#{SesionMotoGP.comenzarCarrera()}"
+                                         update="frmPiloto,:grwlErrores" />
                         
-                        <p:outputLabel value="Código a eliminar: "/>
-                        <p:inputText value="#{SesionMotoGP.codigoEliminar}" maxlength="4" size="10"/>
-                        <p:commandButton value="Eliminar" action="#{SesionMotoGP.eliminarPiloto()}" 
-                                         update="frmPiloto,:grwlErrores"
-                                         />
-                    </p:panel>
-                    <p:panel header="Reportes">
-                        <p:outputLabel value="Promedio de Edad de los pilotos: #{SesionMotoGP.listaPilotos.promediarEdades()}"/>
-                        <br/>
-                        <p:outputLabel value="#{SesionMotoGP.listaPilotos.obtenerListadoPilotos()}"/>
+                        <p:panel rendered="false"
+                                 id="pnlMenorEdad" header="Menor Edad">
+                            <h:outputText value="Código: " />
+                            <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.codigo}" />
+                            <br/>
+                            <h:outputText value="Nombre: " />
+                            <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.nombre}" />
+                            <br/>
+                            <h:outputText value="Edad: " />
+                            <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.edad}" />
 
-                    </p:panel>
-                    <p:panel id="pnlMenorEdad" header="Menor Edad">
-                        <h:outputText value="Código: " />
-                        <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.codigo}" />
-                        <br/>
-                        <h:outputText value="Nombre: " />
-                        <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.nombre}" />
-                        <br/>
-                        <h:outputText value="Edad: " />
-                        <h:outputText value="#{SesionMotoGP.pilotoMenorEdad.edad}" />
-                        
-                    </p:panel>
+                        </p:panel>
 
 
-                </p:panelGrid>
+                    </p:panelGrid>
 
-                <p:panel header="Gráfico" id="pnlVista" style="width: 100%;">
-                    <p:commandButton value="#{SesionMotoGP.textoVista}" 
+
+                </p:fieldset>
+
+
+                <p:panel header="Gráfico" id="pnlVista" style="width: 100%;" 
+                         rendered="#{SesionMotoGP.carreraEnCurso}" >
+                    <p:commandButton value=" Ver #{SesionMotoGP.textoVista}" 
                                      action="#{SesionMotoGP.cambiarVistaPilotos()}"
                                      update="pnlVista"/>
+                    <p:commandButton value="Finalizar la Carrera" update="frmPiloto,:grwlErrores" 
+                                     action="#{SesionMotoGP.finalizarCarrera()}"
+                                     oncomplete="PF('dlgFinalCarrera').show();"/>
 
                     <p:dataTable rendered="#{SesionMotoGP.textoVista=='Gráfico'}"  value="#{SesionMotoGP.listadoPilotos}" var="inf">
                         <p:column>
@@ -230,6 +289,13 @@
                                     update="panelPiloto" 
                                     oncomplete="PF('dlgMoverPiloto').show();" />
                         
+                        <p:menuitem value="Caida de Piloto" 
+                                    action="#{SesionMotoGP.obtenerPilotoDiagrama()}" 
+                                    update="modalReingreso" 
+                                    oncomplete="PF('dlgReingreso').show();" />
+                        
+                        
+
                     </p:contextMenu>
                 </p:panel>
             </p:panel>
@@ -286,7 +352,7 @@
                       modal="true" >
                 <p:panel id="panelEliminarPiloto">
                     <h:panelGrid columns="2" >
-                        
+
                         <h:outputText value="Código:" />
                         <h:outputText value="#{SesionMotoGP.pilotoDiagrama.codigo}" />
                         <h:outputText value="Nombre:" />
@@ -299,6 +365,42 @@
                     <p:commandButton value="Cancelar" onclick="PF('dlgEliminarPiloto').hide();" />
                 </p:panel>
             </p:dialog>
+            
+            <p:dialog id="modalReingreso" header="Caida de Piloto" widgetVar="dlgReingreso" 
+                      modal="true" >
+                <p:panel header="Caida de piloto">
+                    
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Seleccione la posición de reingreso del piloto o elimínelo permanentemente de la carrera"/>
+                        <p:spinner id="spPosicionReingreso" 
+                                   required="true" min="-32767" max="32767" 
+                                   value="#{SesionMotoGP.posicionReingreso}"/>
+                    </h:panelGrid>
+                    <p:commandButton value="Reingresar en posicion" update="pnlVista,:grwlErrores" 
+                                     action="#{SesionMotoGP.reingresarPiloto()}" 
+                                     oncomplete="PF('dlgReingreso').hide();"
+                                     />
+                    <p:commandButton value="Caida sin reingreso" update="pnlVista,:grwlErrores" 
+                                     action="#{SesionMotoGP.eliminarPilotoDiagrama()}" 
+                                     oncomplete="PF('dlgReingreso').hide();"
+                                     />
+                    <p:commandButton value="Cancelar" update="pnlVista,:grwlErrores"
+                                     oncomplete="PF('dlgReingreso').hide();" />
+                </p:panel>
+            </p:dialog> 
+            
+            <p:dialog id="modalFinalCarrera" header="Datos Piloto" widgetVar="dlgFinalCarrera" 
+                      modal="true" >
+                <p:panel header="Posiciones finales">
+                    
+                    <p:outputLabel value="#{SesionMotoGP.obtenerPosicionesCarrera()}" />
+                    
+                    
+                    <p:commandButton value="Aceptar" update="frmPiloto,:grwlErrores" 
+                                     onclick="PF('dlgFinalCarrera').hide();"
+                                     />
+                </p:panel>
+            </p:dialog> 
 
         </h:form>
 

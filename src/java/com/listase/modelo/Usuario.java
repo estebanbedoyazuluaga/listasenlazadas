@@ -16,18 +16,26 @@ public class Usuario implements Serializable{
     private String contrasenia;
     private String nombreCompleto;
     private TipoUsuario tipoUsuario;
+    private String color;
 
     public Usuario() {
     }
 
-    public Usuario(String correo, String contrasenia, String nombreCompleto, TipoUsuario tipoUsuario) {
+    public Usuario(String correo, String contrasenia, String nombreCompleto, TipoUsuario tipoUsuario, String color) {
         this.correo = correo;
         this.contrasenia = contrasenia;
         this.nombreCompleto = nombreCompleto;
         this.tipoUsuario = tipoUsuario;
+        this.color = color;
     }
 
-    
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
 
     public String getCorreo() {
         return correo;

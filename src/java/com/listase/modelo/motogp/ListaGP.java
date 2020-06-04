@@ -262,34 +262,68 @@ public class ListaGP {
             return menor;
         }
     }
-
-    public void intercambiarNodos(byte datoA, byte datoB) throws PilotoException {
-        if (cabeza != null) {
+    
+    //FIXME: tempDatoA y tempDatoB son nulos al finalizar el ciclo.
+    public void intercambiarNodos(short datoA, short datoB) throws PilotoException {
+        if (cabeza == null) {
             throw new PilotoException("La lista de pilotos está vacía");
         } else {
             NodoGP temp = cabeza;
             NodoGP tempDatoA = null;
             NodoGP tempDatoB = null;
 
+            System.out.println("temp antes del ciclo: " + temp.getDato().getNombre());
             while (temp != null) {
+                System.out.println("");
                 if (temp.getDato().getCodigo() == datoA) {
-                    tempDatoA = temp;
+                    tempDatoA = new NodoGP(temp.getDato());
+                    System.out.println("encontrado dato A" + tempDatoA.getDato().getNombre());
                 } else if (temp.getDato().getCodigo() == datoB) {
-                    tempDatoB = temp;
-                    temp = temp.getSiguiente();
+                    tempDatoB = new NodoGP(temp.getDato());
+                    System.out.println("encontrado dato B" + tempDatoB);
                 }
-
-                if (tempDatoA == null || tempDatoB == null) {
-                    throw new PilotoException("Alguno de los datos no se encuentra en la lista.");
-                }
-
-                Piloto pilotoTemp = tempDatoA.getDato();
-
-                tempDatoA.setDato(tempDatoB.getDato());
-                tempDatoB.setDato(pilotoTemp);
-
+                System.out.println("temp: "+temp.getDato().getNombre());
+                temp = temp.getSiguiente();
             }
+            
+            
+            if (tempDatoA == null || tempDatoB == null) {
+                throw new PilotoException("Alguno de los datos no se encuentra en la lista.");
+            }
+
+            Piloto pilotoTemp = tempDatoA.getDato();
+
+            tempDatoA.setDato(tempDatoB.getDato());
+            tempDatoB.setDato(pilotoTemp);
 
         }
     }
+    
+    public void ordenarBubbleSort() throws PilotoException {
+        if (cabeza == null) {
+            throw new PilotoException("La lista de pilotos está vacía");
+        } else if (cabeza.getSiguiente() != null) {
+            NodoGP temp = cabeza;
+            Piloto tempPiloto;
+            int n = contarNodos();
+
+            for (int i = 0; i < n; i++) {
+                temp = cabeza;
+                while (temp.getSiguiente() != null) {
+                    if (temp.getDato().getTiempoClasi() > temp.getSiguiente().getDato().getTiempoClasi()) {
+                        //intercambiarNodos(temp.getDato().getCodigo(), temp.getSiguiente().getDato().getCodigo());
+                        System.out.println("Swuapping "+temp.getDato().getNombre()+" and "+temp.getSiguiente().getDato().getNombre());
+                        tempPiloto = temp.getDato();
+
+                        temp.setDato(temp.getSiguiente().getDato());
+                        temp.getSiguiente().setDato(tempPiloto);
+                    }
+                    temp = temp.getSiguiente();
+                }
+            }
+            
+            
+        }
+    }
+
 }

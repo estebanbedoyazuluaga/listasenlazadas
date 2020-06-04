@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.diagram.Connection;
 import org.primefaces.model.diagram.DefaultDiagramModel;
 import org.primefaces.model.diagram.DiagramModel;
@@ -67,18 +69,131 @@ public class SesionMotoGP implements Serializable {
     
     byte pilotoAIntercambiarB;
     
+    byte posicionReingreso;
+    
     public SesionMotoGP() {
     }
     
-    //<editor-fold defaultstate="collapsed" desc="Clasificacion">
+    //<editor-fold defaultstate="collapsed" desc="Clasificacion [ IGNORAR | NO ESTÁ EN USO ]">
     
     private Piloto pilotoClasificacion;
     
-    public void guardarPilotoClasificacion(){
-        
+    
+    private double tiempoPiloto;//segundos
+    
+    //sin usar:
+    public void guardarPilotoClasificacion() throws PilotoException {
+        pilotoClasificacion.setTiempoClasi(tiempoPiloto);
+
+        if (listaPilotos.getCabeza() == null) {
+            listaPilotos.adicionarNodo(pilotoClasificacion);
+        } else {
+            NodoGP temp = listaPilotos.getCabeza();
+            short cont = 1;//cuenta las posiciones
+            
+            //verifica si la lista solo tiene un nodo:
+            if (temp.getSiguiente() == listaPilotos.getCabeza()) {
+                if (tiempoPiloto >= listaPilotos.getCabeza().getDato().getTiempoClasi()) {
+                    listaPilotos.adicionarNodo(pilotoClasificacion);
+                } else {
+                    listaPilotos.adicionarNodoAlInicio(pilotoClasificacion);
+                }
+            } else {
+                do {
+                    //pregunta si se ha llegado al final de la lista:
+                    if (temp.getSiguiente() == listaPilotos.getCabeza()) {
+                        listaPilotos.adicionarNodoAlInicio(pilotoClasificacion);
+                        break;
+                    }//Pregunta si el jugador debería ir entre temp y el siguiente de temp
+                    else if (temp.getDato().getTiempoClasi() <= tiempoPiloto
+                            && temp.getSiguiente().getDato().getTiempoClasi() > tiempoPiloto) {
+
+                        listaPilotos.adicionarNodoEnPosicion(pilotoClasificacion, ++cont);
+                        break;
+                    }
+                    cont++;
+                    temp = temp.getSiguiente();
+                } while (temp != listaPilotos.getCabeza());
+            }
+        }
     }
     
+    public void limpiarClasificacion(){
+        listaPilotos = new ListaGP();
+    }
+    
+    
+    //Sin usar:
+    public String generarListaClasificacion() {
+        if (listaPilotos.getCabeza() != null) {
+            String retorno = "";
+            NodoGP temp = listaPilotos.getCabeza();
+            while(temp != null){
+                //esta mondá no sirve 
+                //WONTFIX: la siguiente línea genera un NullPointerException y no entiendo por qué
+                retorno += temp.getSiguiente().getDato().toStringMejor() + '\n';
+                temp = temp.getSiguiente();
+            }
+            return retorno;
+        } else {
+            return "(lista vacía)";
+        }
+    }
+    
+    
+    
     //</editor-fold>
+    
+    private boolean verPanelClasificacion;
+    private boolean carreraEnCurso;
+    
+    private String mensajeFinalCarrera;
+    
+    public void comenzarCarrera() throws PilotoException {
+        if (listaPilotos.getCabeza() != null) {
+            ordenarPilotos();
+            this.verPanelClasificacion = false;
+            this.carreraEnCurso = true;
+            listadoPilotos = listaPilotos.obtenerListaPilotos();
+            pintarLista();
+        } else {
+            JsfUtil.addErrorMessage("Debe haber por lo menos un piloto compitiendo");
+        }
+    }
+    
+    public void finalizarCarrera() throws PilotoException{
+        this.carreraEnCurso = false;
+    }
+    
+    public String obtenerPosicionesCarrera(){
+        NodoGP temp = listaPilotos.getCabeza();
+        if (temp!=null){
+            String msg="";
+            short cont = 0;
+            while(temp != null) {
+                msg += ++cont + "." + temp.getDato().getNombre() + "[Cod." + temp.getDato().getCodigo() + "] \n";
+                temp = temp.getSiguiente();
+            }
+            return msg;
+        } else {
+            return "No finalizó ningún piloto";
+        }
+    }
+    
+    public void reingresarPiloto() throws PilotoException{
+        short posicionActual = listaPilotos.obtenerPosicion(pilotoSeleccionado);
+        if (posicionReingreso > posicionActual){
+            
+            Piloto temp = listaPilotos.obtenerPiloto(pilotoSeleccionado);
+            listaPilotos.eliminarPiloto(pilotoSeleccionado);
+            listaPilotos.adicionarNodoEnPosicion(temp, posicionReingreso);
+            
+            listadoPilotos = listaPilotos.obtenerListaPilotos();
+            pintarLista();
+        }else {
+            JsfUtil.addErrorMessage("Posicion de reingreso inválida");
+        }
+    }
     
     @PostConstruct
     public void inicializar() {
@@ -87,15 +202,21 @@ public class SesionMotoGP implements Serializable {
         codigoDeptoSel = controlLocalidades.getDepartamentos().get(0).getCodigo();
 
         listaPilotos = new ListaGP();
+        
+        this.carreraEnCurso = false;
+        
+        this.verPanelClasificacion = true;
 
         //LLenado de la bds
-        listaPilotos.adicionarNodo(new Piloto("Fulano", "Colombiano", "rosa", (byte) 22, (byte) 4, new Moto(), (short) 0001));
-        listaPilotos.adicionarNodo(new Piloto("Sultano", "Ecuatoriano", "purpura", (byte) 25, (byte) 4, new Moto(), (short) 0002));
-        listaPilotos.adicionarNodo(new Piloto("Mengano", "Venezolano", "verde", (byte) 19, (byte) 4, new Moto(), (short) 0003));
-        listaPilotos.adicionarNodo(new Piloto("Perengano", "Peruano", "amarillo", (byte) 28, (byte) 4, new Moto(), (short) 0004));
-
-        //piloto = ayudante.getDato();
+        listaPilotos.adicionarNodo(new Piloto("Fulano", "Colombiano", "rosa", (byte) 22, (byte) 4, new Moto(), (short) 0001, 3.0));
+        listaPilotos.adicionarNodo(new Piloto("Sultano", "Ecuatoriano", "purpura", (byte) 25, (byte) 4, new Moto(), (short) 0002, 2.0));
+        listaPilotos.adicionarNodo(new Piloto("Mengano", "Venezolano", "verde", (byte) 19, (byte) 4, new Moto(), (short) 0003, 1.0));
+        listaPilotos.adicionarNodo(new Piloto("Perengano", "Peruano", "amarillo", (byte) 28, (byte) 4, new Moto(), (short) 0004, 0.5));
+        
+        ayudante = listaPilotos.getCabeza();
+        piloto = ayudante.getDato();
         piloto = new Piloto();
+        pilotoClasificacion = new Piloto();
 
         //Me llena el objeto List para la tabla
         listadoPilotos = listaPilotos.obtenerListaPilotos();
@@ -104,6 +225,50 @@ public class SesionMotoGP implements Serializable {
 
     //<editor-fold defaultstate="collapsed" desc="Metodos de acceso">
 
+    public byte getPosicionReingreso() {
+        return posicionReingreso;
+    }
+
+    public void setPosicionReingreso(byte posicionReingreso) {
+        this.posicionReingreso = posicionReingreso;
+    }
+
+    public String getMensajeFinalCarrera() {
+        return mensajeFinalCarrera;
+    }
+
+    public void setMensajeFinalCarrera(String mensajeFinalCarrera) {
+        this.mensajeFinalCarrera = mensajeFinalCarrera;
+    }
+
+    
+    
+    public double getTiempoPiloto() {
+        return tiempoPiloto;
+    }
+
+    public void setTiempoPiloto(double tiempoPiloto) {
+        this.tiempoPiloto = tiempoPiloto;
+    }
+
+    public boolean isVerPanelClasificacion() {
+        return verPanelClasificacion;
+    }
+
+    public void setVerPanelClasificacion(boolean verPanelClasificacion) {
+        this.verPanelClasificacion = verPanelClasificacion;
+    }
+
+    public boolean isCarreraEnCurso() {
+        return carreraEnCurso;
+    }
+
+    public void setCarreraEnCurso(boolean carreraEnCurso) {
+        this.carreraEnCurso = carreraEnCurso;
+    }
+    
+    
+    
     public Piloto getPilotoClasificacion() {
         return pilotoClasificacion;
     }
@@ -255,17 +420,22 @@ public class SesionMotoGP implements Serializable {
     public void guardarPiloto() {
         //obtiene el consecutivo
         piloto.setCodigo((short) (listaPilotos.contarNodos() + 1));
-        if (alInicio.compareTo("1") == 0) {
-            listaPilotos.adicionarNodoAlInicio(piloto);
+        if (piloto.getTiempoClasi() <= 0) {
+            JsfUtil.addErrorMessage("Tiempo de vuelta inválido");
         } else {
-            listaPilotos.adicionarNodo(piloto);
-        }
-        //Vuelvo a llenar la lista para la tabla
-        listadoPilotos = listaPilotos.obtenerListaPilotos();
-        pintarLista();
-        deshabilitarFormulario = true;
-        JsfUtil.addSuccessMessage("El piloto se ha guardado exitosamente");
 
+            if (alInicio.compareTo("1") == 0) {
+                listaPilotos.adicionarNodoAlInicio(piloto);
+            } else {
+                listaPilotos.adicionarNodo(piloto);
+            }
+            
+            //Vuelvo a llenar la lista para la tabla
+            listadoPilotos = listaPilotos.obtenerListaPilotos();
+            pintarLista();
+            deshabilitarFormulario = true;
+            JsfUtil.addSuccessMessage("El piloto se ha guardado exitosamente");
+        }
     }
 
     public void habilitarFormulario() {
@@ -357,6 +527,34 @@ public class SesionMotoGP implements Serializable {
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_LEFT));
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
                 
+                
+                //selecciona la clase css segun el color del piloto
+                switch(temp.getDato().getColor()){
+                    case "rosa":
+                        ele.setStyleClass("ui-diagram-rosa");
+                        break;
+                    case "purpura":
+                        ele.setStyleClass("ui-diagram-purpura");
+                        break;
+                    case "naranja":
+                        ele.setStyleClass("ui-diagram-naranja");
+                        break;
+                    case "rojo":
+                        ele.setStyleClass("ui-diagram-rojo");
+                        break;
+                    case "azul":
+                        ele.setStyleClass("ui-diagram-azul");
+                        break;
+                    case "verde":
+                        ele.setStyleClass("ui-diagram-verde");
+                        break;
+                    case "amarillo":
+                        ele.setStyleClass("ui-diagram-amarillo");
+                        break;
+                    default:
+                        break;
+                }
+                
                 model.addElement(ele);
                 temp = temp.getSiguiente();
                 posX = posX + 5;
@@ -371,7 +569,7 @@ public class SesionMotoGP implements Serializable {
                 model.connect(createConnection(model.getElements().get(i + 1).getEndPoints().get(2),
                         model.getElements().get(i).getEndPoints().get(3), "Ant"));
             }
-
+            
         }
     }
     
@@ -416,10 +614,9 @@ public class SesionMotoGP implements Serializable {
                 ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
                 
                 if (temp.getDato().getEdad() == menorEdad){
-                    ele.setStyleClass("ui-diagram-menorEdad");
+                    ele.setStyleClass("ui-diagram-purpura");
                     pilotoMenorEdad = temp.getDato();
                 }
-                    
 
                 model.addElement(ele);
                 temp = temp.getSiguiente();
@@ -439,6 +636,11 @@ public class SesionMotoGP implements Serializable {
         }
     }
 
+    public void handleToggle(ToggleEvent event) {
+        FacesMessage msg = new FacesMessage(FacesMessage.SEVERITY_INFO, "Toggled", "Visibility:" + event.getVisibility());
+        FacesContext.getCurrentInstance().addMessage(null, msg);
+    }
+    
     public void onClickRight() {
         String id = FacesContext.getCurrentInstance().getExternalContext()
                 .getRequestParameterMap().get("elementId");
@@ -549,6 +751,9 @@ public class SesionMotoGP implements Serializable {
         pintarLista();
     }
     
-    
+    public void ordenarPilotos() throws PilotoException{
+        listaPilotos.ordenarBubbleSort();
+        pintarLista();
+    }
     
 }

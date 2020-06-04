@@ -18,6 +18,11 @@ public class NodoGP {
     public NodoGP(Piloto dato) {
         this.dato = dato;
     }
+    
+    public NodoGP(){
+        
+    }
+    
 
     public Piloto getDato() {
         return dato;

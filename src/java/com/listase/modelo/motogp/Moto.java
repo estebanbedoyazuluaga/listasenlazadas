@@ -17,6 +17,7 @@ public class Moto {
     }
 
     public Moto() {
+        nombre=marca=modelo=matricula=color="";
     }
     
     

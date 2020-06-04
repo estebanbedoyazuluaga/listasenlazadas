@@ -35,29 +35,39 @@ public class ControladorUsuarios {
         return usuarios;
     }
 
-    public void setUsuarios(List<Usuario> usuarios) {
+    public static void setUsuarios(List<Usuario> usuarios) {
         ControladorUsuarios.usuarios = usuarios;
     }
 
+    
+    
     private void iniciarListados() {
         //Simula la conexion a bds o archivos planos
         tiposUsuario = new ArrayList<>();
         tiposUsuario.add(new TipoUsuario(1, "Administrador"));
         tiposUsuario.add(new TipoUsuario(2, "Corriente"));
         //tiposUsuario.add(new TipoUsuario(3, "El de los tintos"));
-        // [  admin  ,  corriente  , el de los tintos]
-        //       0   ,   1         ,  3
+        //              [  admin  ,  corriente  , el de los tintos]
+        // Posiciones:      0     ,      1      ,       2
 
         usuarios = new ArrayList<>();
         
         usuarios.add(new Usuario("ebedoya@umanizales.edu.co", "qwer", "esteban",
-                tiposUsuario.get(0)));
+                tiposUsuario.get(0),"purpura" ));
         usuarios.add(new Usuario("fulano@mail.com", "1234", "fulano",
-                tiposUsuario.get(1)));
+                tiposUsuario.get(1),"amarillo"));
         usuarios.add(new Usuario("sultano@mail.com", "1234", "sultano",
-                tiposUsuario.get(1)));
+                tiposUsuario.get(1),"naranja"));
         usuarios.add(new Usuario("mengano@mail.com", "1234", "mengano",
-                tiposUsuario.get(1)));
+                tiposUsuario.get(1),"azul"));
+//        usuarios.add(new Usuario("test1@", "1234", "test1",
+//                tiposUsuario.get(1),"rosa"));
+//        usuarios.add(new Usuario("test2@", "1234", "test2",
+//                tiposUsuario.get(1),"rosa"));
+//        usuarios.add(new Usuario("test3@", "1234", "test3",
+//                tiposUsuario.get(1),"rosa"));
+//        usuarios.add(new Usuario("test4@", "1234", "test4",
+//                tiposUsuario.get(1),"rosa"));
         
     }
 

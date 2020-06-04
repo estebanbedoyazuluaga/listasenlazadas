@@ -58,7 +58,8 @@ public class ApplicationPirinola implements Serializable{
     public ApplicationPirinola() {
 
         caja = 10;
-        turnosFaltantes = 20;
+        
+        //turnosFaltantes = 20;
         
         listaJugadores = new ListaCircularDE();
 
@@ -156,12 +157,12 @@ public class ApplicationPirinola implements Serializable{
                 break;
         }
 
-        if (caja <= 0) {
+        if (caja < 0) {
             caja = 0;
         }
 
         jugadorActual = jugadorActual.getSiguiente();
-        listaJugadores.setCabeza(jugadorActual.getSiguiente());
+        listaJugadores.setCabeza(jugadorActual);
 
         if (jugadorActual.getAnterior().getDato().getFichas() <= 0) {
             listaJugadores.eliminarNodo(jugadorActual.getAnterior().getDato().getNombre());
@@ -170,6 +171,8 @@ public class ApplicationPirinola implements Serializable{
         if (listaJugadores.contarNodos() == 1) {
             inGame = false;
         }
+        
+        
         pintarJugadores();
 
     }
@@ -209,6 +212,7 @@ public class ApplicationPirinola implements Serializable{
 
         return conn;
     }
+    
     public void pintarJugadores() {
         //Instancia el modelo
         model = new DefaultDiagramModel();
@@ -248,7 +252,7 @@ public class ApplicationPirinola implements Serializable{
                 angle = (2 * Math.PI * cont) / numElementos;
                 
                 //para acomodar el primer jugador a 90 grados de la horizontal:
-                angle += (1.5 * Math.PI);
+                //angle += (1.5 * Math.PI);
 
                 posX = 35 + (15 * Math.cos(angle));
                 posY = 15 + (15 * Math.sin(angle));
@@ -259,18 +263,62 @@ public class ApplicationPirinola implements Serializable{
                 Element ele = new Element(temp.getDato().getNombre() + ": " + temp.getDato().getFichas(),
                         posX + "em", posY + "em");
                 ele.setId(String.valueOf(temp.getDato().getNombre()));
-                //adiciona un conector al cuadrito
-                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.TOP));
-                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_RIGHT));
-
-                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_LEFT));
-                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
+                
+                //adiciona puntos de anclaje al elemento de acuerdo al ángulo:
+                if (angle > 0 && angle < Math.PI) {
+                    ele.addEndPoint(new BlankEndPoint(EndPointAnchor.TOP));
+                    ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
+                } else if (angle > Math.PI && angle < 2 * Math.PI) {
+                    ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
+                    ele.addEndPoint(new BlankEndPoint(EndPointAnchor.TOP));
+                } else if (angle == Math.PI) {
+                    ele.addEndPoint(new BlankEndPoint(EndPointAnchor.RIGHT));
+                    ele.addEndPoint(new BlankEndPoint(EndPointAnchor.LEFT));
+                } else if (angle == 0){
+                    ele.addEndPoint(new BlankEndPoint(EndPointAnchor.LEFT));
+                    ele.addEndPoint(new BlankEndPoint(EndPointAnchor.RIGHT));
+                } else {
+                    ele.addEndPoint(new BlankEndPoint(EndPointAnchor.TOP));
+                    ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
+                }
+//                
+//                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.TOP));
+//                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_RIGHT));
+//
+//                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM_LEFT));
+//                ele.addEndPoint(new BlankEndPoint(EndPointAnchor.BOTTOM));
 
                 //si es el primer elemento, añadirlo a la clase css que lo pone morado.
-                if (temp == listaJugadores.getCabeza()) {
-                    ele.setStyleClass("ui-diagram-primero");
+//                if (temp == listaJugadores.getCabeza()) {
+//                    ele.setStyleClass("ui-diagram-primero");
+//                }
+                
+                switch(temp.getDato().getColor()){
+                    case "rosa":
+                        ele.setStyleClass("ui-diagram-rosa");
+                        break;
+                    case "purpura":
+                        ele.setStyleClass("ui-diagram-purpura");
+                        break;
+                    case "naranja":
+                        ele.setStyleClass("ui-diagram-naranja");
+                        break;
+                    case "rojo":
+                        ele.setStyleClass("ui-diagram-rojo");
+                        break;
+                    case "azul":
+                        ele.setStyleClass("ui-diagram-azul");
+                        break;
+                    case "verde":
+                        ele.setStyleClass("ui-diagram-verde");
+                        break;
+                    case "amarillo":
+                        ele.setStyleClass("ui-diagram-amarillo");
+                        break;
+                    default:
+                        break;
                 }
-
+                
                 model.addElement(ele);
 
                 temp = temp.getSiguiente();
@@ -279,24 +327,38 @@ public class ApplicationPirinola implements Serializable{
 
             //Pinta las flechas            
             for (int i = 0; i < model.getElements().size() - 1; i++) {
-                model.connect(createConnection(model.getElements().get(i).getEndPoints().get(1),
+                model.connect(createConnection(model.getElements().get(i).getEndPoints().get(0),
                         model.getElements().get(i + 1).getEndPoints().get(0), "Sig"));
 
-                model.connect(createConnection(model.getElements().get(i + 1).getEndPoints().get(2),
-                        model.getElements().get(i).getEndPoints().get(3), "Ant"));
+                model.connect(createConnection(model.getElements().get(i + 1).getEndPoints().get(1),
+                        model.getElements().get(i).getEndPoints().get(1), "Ant"));
             }
+            
+            //Pinta flechas del último elemento al primero:
+            model.connect(createConnection(model.getElements().get(model.getElements().size()-1).getEndPoints().get(0),
+                        model.getElements().get(0).getEndPoints().get(0), "Sig"));
+            
+            model.connect(createConnection(model.getElements().get(0).getEndPoints().get(1),
+                        model.getElements().get(model.getElements().size()-1).getEndPoints().get(1), "Ant"));
+            
             
             //pone un elemento en el centro del diagrama con las fichas en la caja
             model.addElement(new Element("Caja: " + this.caja, 35 + "em", 15 + "em"));
+            
+            //XXX: Por alguna razón, si se añade este elemento, 
+            //desaparecen las conecciones del resto del diagrama:
+            //model.addElement(new Element("Turno", 70 + "em", 15 + "em"));
         }
     }
 
     private void cargarJugadores(){
         listaJugadores = new ListaCircularDE();
         for (Usuario usuario : ControladorUsuarios.getUsuarios()) {
-            listaJugadores.adicionarNodo(
-                    new Jugador(usuario.getNombreCompleto(),usuario.getCorreo(), 15)
-            );
+            
+            Jugador miJugador = new Jugador(usuario.getNombreCompleto(),usuario.getCorreo(), 15, usuario.getColor());
+            
+            listaJugadores.adicionarNodo(miJugador);
+            
         }
     }
     

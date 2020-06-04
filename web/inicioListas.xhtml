@@ -15,9 +15,7 @@
             <p:outputLabel value="Nivel de usuario: #{loginBean.usuarioAutenticado.tipoUsuario.descripcion}" />
             <br/>
             <br/>
-            <p:commandButton value="Clasificacion" action="clasificacion/index.xhtml"  ajax="false"/>
             <br/>
-            <p:commandButton value="pirinola" action="pirinola/index.xhtml" />
             <br/>
             <p:commandButton value="Lista SE" action="listase/index.xhtml"  ajax="false"/>
             
@@ -29,8 +27,8 @@
                              disabled="#{loginBean.usuarioAutenticado.tipoUsuario.codigo != 1}"
                              ajax="false"/>
             <p:commandButton value="Lista GP" action="listagp/index.xhtml" 
-                             disabled="#{loginBean.usuarioAutenticado.tipoUsuario.codigo != 1}"
                              ajax="false"/>
+            <p:commandButton value="pirinola" action="pirinola/index.xhtml" />
             <br/>
             <br/>
             <p:commandButton value="Salir" action="login.xhtml" ajax="false"/>

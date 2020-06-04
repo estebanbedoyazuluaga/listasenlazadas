@@ -13,17 +13,27 @@ public class Jugador {
     private String nombre;
     private String correo;
     private int fichas;
+    private String color;
    
 
-    public Jugador(String nombre, String correo, int fichas) {
+    public Jugador(String nombre, String correo, int fichas, String color) {
         this.fichas = fichas;
         this.correo = correo;
         this.nombre = nombre;
+        this.color = color;
     }
 
     public Jugador() {
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+    
     public String getCorreo() {
         return correo;
     }

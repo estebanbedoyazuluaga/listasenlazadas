@@ -31,6 +31,34 @@ and open the template in the editor.
                 background-color: #7f00ff;
             }
 
+            .ui-diagram-rosa{
+                background-color: #cc58d6;
+            }
+
+            .ui-diagram-purpura{
+                background-color: #8d58d6;
+            }
+            
+            .ui-diagram-naranja{
+                background-color:  #FF5733;
+            }
+            
+            .ui-diagram-rojo{
+                background-color: #C70039;
+            }
+            
+            .ui-diagram-azul{
+                background-color:  #58a1d6;
+            }
+            
+            .ui-diagram-verde{
+                background-color: #58d68d;
+            }
+            
+            .ui-diagram-amarillo{
+                background-color: #FFC300;
+            }
+
             .ui-diagram-success {
                 background-color: #9CB071;
                 color: #ffffff;
@@ -52,19 +80,20 @@ and open the template in the editor.
     <h:body>
         <h:form id="frmPirinola">
            
+            <p:commandButton value="Volver" action="inicio" />
 
             <p:growl id="msgs" showDetail="true" />
             <p:poll interval="5" update="frmPirinola" />
             
             <!-- El panel de administrador se usó para probar el diagrama circular de jugadores -->
-            <p:fieldset rendered="false" 
+            <p:fieldset rendered="true" 
                         legend="Panel de Administrador" 
                         toggleable="true" toggleSpeed="100">
-                <!-- 
+                 
                 
                 <p:ajax event="toggle" listener="#{ApplicationPirinola.handleToggle}" update="msgs" /> 
                 
-                -->
+                
                 
 
                 <h:panelGrid columns="3">
